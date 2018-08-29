@@ -1,11 +1,6 @@
-import cmd
-import textwrap
-import sys
-import os
-import time
-import random
-import math
+import cmd,textwrap,sys,os,time,random,math,re
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
+from TerminalGameFolderChecker import GetPlayerAmount
 
 StartMenuText = ["start","help","quit"]
 BootScreenText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
@@ -22,7 +17,7 @@ ExitMenuText = ["1 = YES", "2 = NO"]
 ip = "127.0.0.1"
 LoginCode = "12345"
 TransportNumber = "101"
-TransportMinAmount = "6"
+TransportMinAmount = "0"
 columns, rows = os.get_terminal_size(1)
 FirstLoad = True
 
@@ -67,14 +62,15 @@ def TitleScreen_Selections():
 
 def StartGame():
     global FirstLoad
+    global TransportMinAmount
     if FirstLoad == False:
         time.sleep(1.00)
     else:
         FirstLoad = False
+        TransportMinAmount = GetPlayerAmount()
 
     os.system('cls||clear')
     SlowPrintArray(CommandsText, "PLEASE ENTER A COMMAND")
-
     while True:
         option = TextInput()
         if Commands[0] == option: #1 = CONNECT TO COMPUTER
@@ -143,14 +139,15 @@ def LoginMenu():
         StartGame()
     elif myPlayer.ConnectionOnline == True and myPlayer.CableConnected == True:
         while True:
-            slowprint("PLEASE ENTER PASSWORD")
+            slowprint("PLEASE ENTER PIN CODE")
             option = TextInput()
             if LoginCode == option:
                 myPlayer.LogedIn = True
                 FakeLoading("CONNECTING","LOGIN SUCCESFULL")
                 StartGame()
             else:
-                slowprint("ERROR: PASSWORD INCORRECT")
+                slowprint("ERROR: PINCODE INCORRECT, RETURNING TO MENU")
+                StartGame()
 
 #--------------------------------------------------------------------
 def ChangeAmountMenu():

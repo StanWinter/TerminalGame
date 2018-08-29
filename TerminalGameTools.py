@@ -6,6 +6,11 @@ import os
 
 columns, rows = os.get_terminal_size(1)
 
+# if 0 then all the brackets will appear around the edges
+# if 1 then all the brackets will appear 1 space off the edges
+BracketDisplacement = 3
+
+
 def slowprint(text):
     for character in text:
         sys.stdout.write(character)
@@ -20,7 +25,7 @@ def FakeLoading(text, text2 = ""):
     for x in range(amount):
         sys.stdout.write(".")
         sys.stdout.flush()
-        time.sleep(random.uniform(0.15, 0.30))
+        time.sleep(random.uniform(0.15, 0.15))
 
     print('')
     print(text2)
@@ -48,11 +53,11 @@ def FullScreenMessage(array):
     # Populate screen
     for x in range(rows-1):
         for number in range(columns):
-            if x == 0 or x == rows-2:
+            if x == (0 + BracketDisplacement) and number > BracketDisplacement and number < (columns-1 -BracketDisplacement) or x == (rows - 2  -BracketDisplacement) and number > BracketDisplacement and number <(columns-1 -BracketDisplacement):
                 sys.stdout.write("#")
                 sys.stdout.flush()
             else:
-                if number == 0 or number == columns-1:
+                if number == (0 + BracketDisplacement) and x > BracketDisplacement-1 and x < (rows-1-BracketDisplacement) or number == (columns-1 -BracketDisplacement) and x > BracketDisplacement-1 and x <(rows-1 -BracketDisplacement):
                     sys.stdout.write("#")
                     sys.stdout.flush()
                 elif x == middlePoint and number >= textstart and number <= (textstart + (len(array[0])-1)):
