@@ -31,6 +31,18 @@ def FakeLoading(text, text2 = ""):
     print(text2)
     print('')
 
+def FakeLoading(text):
+    sys.stdout.write(text[0])
+    amount = random.randint(5,12)
+    for x in range(amount):
+        sys.stdout.write(".")
+        sys.stdout.flush()
+        time.sleep(random.uniform(0.15, 0.15))
+
+    print('')
+    print(text[1])
+    print('')
+
 def SlowPrintArray(array, extraText = ""):
     lines = len(array)
     for x in range(lines):

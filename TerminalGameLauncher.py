@@ -1,25 +1,65 @@
 import cmd,textwrap,sys,os,time,random,math,re
+import TerminalGameLanguage
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
 
-StartMenuText = ["start","help","quit"]
-BootScreenText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
-EndScreenText = ["CHANGES SAVED","PLEASE TRANSPORT THE PRISONERS"]
-EndScreenExitGameText = ["SYSTEM UNLOCKED","PLEASE ENTER 1 TO START"]
+# etc
+columns, rows = os.get_terminal_size(1)
+FirstLoad = True
 
-Commands = ["1","2","3","4"]
-CommandsText = ["1 = CONNECT TO COMPUTER","2 = LOGIN TO COMPUTER",
-                "3 = EDIT PRISONER TRANSPORT MANIFEST","4 = SAVE CHANGES AND EXIT"]
-TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRANSPORT",
-                     "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
-ExitMenuText = ["1 = YES", "2 = NO"]
-
+# codes the player needs to enter
 ip = "127.0.0.1"
 LoginCode = "12345"
 TransportNumber = "101"
 TransportMinAmount = "0"
-columns, rows = os.get_terminal_size(1)
-FirstLoad = True
+
+# inputs made by player/dev
+DevInputText = ["start","help","quit"]
+InputCommands = ["1","2","3","4"]
+
+# screen text for special screens
+BootScreenLockedText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
+BootScreenUnlockedText = ["SYSTEM UNLOCKED","PLEASE ENTER 1 TO START"]
+EndScreenText = ["CHANGES SAVED","PLEASE TRANSPORT THE PRISONERS"]
+
+# options text shown to the player
+InputCommandsText = ["1 = CONNECT TO COMPUTER","2 = LOGIN TO COMPUTER",
+                        "3 = EDIT PRISONER TRANSPORT MANIFEST","4 = SAVE CHANGES AND EXIT"]
+TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRANSPORT",
+                        "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
+ExitMenuText = ["1 = YES", "2 = NO"]
+
+class TextAndInput:
+    def __init__(self):
+        self.FakeLoadingText1 = ["INSTALLING KEYCRACKER.PY", "INSTALL COMPLETED"]
+        self.ACCESSGRANTEDTEXT = "ACCESS GRANTED"
+        self.PLEASEENTERCOMMANDTEXT = "PLEASE ENTER A COMMAND"
+        self.PLEASEENTERAVALIDCOMMANDTEXT = "PLEASE ENTER A VALID COMMAND"
+        self.ConnectText1 = "ERROR: NOT CONNECTED TO THE INTERNET"
+        self.ConnectText2 = "PLEASE ENTER THE IP YOU WANT TO CONNECT TO"
+        self.ConnectText3 = "ERROR: CANT CONNECT TO IP"
+        self.ConnectFakeLoadingText1 = ["CONNECTING","CONNECTION ESTABLISHED"]
+        self.LoginText1 = "ERROR: NOT CONNECTED TO THE INTERNET"
+        self.LoginText2 = "ERROR: NOT CONNECTED TO A OTHER COMPUTER"
+        self.LoginText3 = "PLEASE ENTER PIN CODE"
+        self.LoginText4 = "ERROR: PINCODE INCORRECT, RETURNING TO MENU"
+        self.LoginFakeLoadingText1 = ["CONNECTING","LOGIN SUCCESFULL"]
+        self.ChangeAmountText1 = "ERROR: NOT CONNECTED TO THE INTERNET"
+        self.ChangeAmountText2 = "ERROR: NOT CONNECTED TO A OTHER COMPUTER"
+        self.ChangeAmountText3 = "ERROR: NOT LOGGED IN"
+        self.ChangeAmountText4 = "PLEASE ENTER TRANSPORT NUMBER"
+        self.ChangeAmountFakeLoadingText1 = "SEARCHING","SEARCH COMPLETED"
+        self.ChangeAmountFakeLoadingText2 = "SEARCHING","SEARCH FAILED"
+        self.TransportText1 = "ADMINISTRATOR ACCESS REQUIRED"
+        self.PrisonerText1 = "PLEASE ENTER THE AMOUNT OF PRISONERS THAT NEED TO BE TRANSPORTED"
+        self.PrisonerFakeLoadingText1 = ["PROCESSING","TASK COMPLETED PLEASE SAVE THE CHANGES AND CARRY ON WITH YOUR WORK"]
+        self.PrisonerFakeLoadingText2 = ["PROCESSING","ERROR: INVALID NUMBER"]
+        self.ExitMenuText1 = "FILE CHANGES DETECTED, PLEASE EXIT TO SAVE CHANGES"
+        self.ExitMenuText2 = "NO FILE CHANGES DETECTED, ARE YOU SURE YOU WANT TO EXIT?"
+        self.ExitMenuText3 = "ALL PROGRESS WILL BE LOST!"
+TextColl = TextAndInput()
+
+
 
 # PLAYER DATA
 class player:
@@ -35,7 +75,8 @@ myPlayer = player()
 
 # Screen the player will see on startup
 def TitleScreen():
-    FullScreenMessage(BootScreenText)
+    SetLanguage(False)
+    FullScreenMessage(BootScreenLockedText)
     TitleScreen_Selections()
 
 #--------------------------------------------------------------------
@@ -43,18 +84,18 @@ def TitleScreen():
 def TitleScreen_Selections():
     while True:
         option = TextInput()
-        if option == StartMenuText[0]:
+        if option == DevInputText[0]:
             myPlayer.GameStarted = True
             os.system('cls||clear')
-            FakeLoading("INSTALLING KEYCRACKER.PY", "INSTALL COMPLETED")
-            slowprint("ACCES GRANTED")
+            FakeLoading(TextColl.FakeLoadingText1)
+            slowprint(TextColl.ACCESSGRANTEDTEXT)
             time.sleep(2.00)
             StartGame()
             break
         # elif option == StartMenuText[1]:
         #     HelpMenu()
         #     break
-        elif option == StartMenuText[2]:
+        elif option == DevInputText[2]:
             sys.exit()
         else:
             slowprint("DEV START SCREEN ENTER START")
@@ -70,23 +111,23 @@ def StartGame():
         TransportMinAmount = GetPlayerAmount()
 
     os.system('cls||clear')
-    SlowPrintArray(CommandsText, "PLEASE ENTER A COMMAND")
+    SlowPrintArray(InputCommandsText, TextColl.PLEASEENTERCOMMANDTEXT)
     while True:
         option = TextInput()
-        if Commands[0] == option: #1 = CONNECT TO COMPUTER
+        if InputCommands[0] == option: #1 = CONNECT TO COMPUTER
             ConnectMenu()
             break
-        elif Commands[1] == option: #2 = LOGIN TO COMPUTER
+        elif InputCommands[1] == option: #2 = LOGIN TO COMPUTER
             LoginMenu()
             break
-        elif Commands[2] == option: #3 = EDIT PRISONER TRANSPORT MANIFEST
+        elif InputCommands[2] == option: #3 = EDIT PRISONER TRANSPORT MANIFEST
             ChangeAmountMenu()
             break
-        elif Commands[3] == option: #4 = SAVE CAHNGES AND EXIT
+        elif InputCommands[3] == option: #4 = SAVE CAHNGES AND EXIT
             ExitMenu()
             break
         else:
-            slowprint("PLEASE ENTER A VALID COMMAND")
+            slowprint(TextColl.PLEASEENTERAVALIDCOMMANDTEXT)
 #--------------------------------------------------------------------
 def HelpMenu():
     if myPlayer.GameStarted == False:
@@ -111,20 +152,20 @@ def ConnectMenu():
     os.system('cls||clear')
 
     if myPlayer.CableConnected == False:
-        slowprint("ERROR: NOT CONNECTED TO THE INTERNET")
+        slowprint(TextColl.ConnectText1)
         StartGame()
     else:
-        slowprint("PLEASE ENTER THE IP YOU WANT TO CONNECT TO")
+        slowprint(TextColl.ConnectText2)
         while True:
             option = TextInput()
             if myPlayer.CableConnected == True and ip in option:
                 os.system('cls||clear')
                 myPlayer.ConnectionOnline = True
-                FakeLoading("CONNECTING","CONNECTION ESTABLISHED")
+                FakeLoading(TextColl.ConnectFakeLoadingText1)
                 StartGame()
                 break
             else:
-                slowprint("ERROR: CANT CONNECT TO IP")
+                slowprint(TextColl.ConnectText3)
                 StartGame()
                 break
 #--------------------------------------------------------------------
@@ -132,21 +173,21 @@ def LoginMenu():
     os.system('cls||clear')
 
     if myPlayer.CableConnected == False:
-        slowprint("ERROR: NOT CONNECTED TO THE INTERNET")
+        slowprint(TextColl.LoginText1)
         StartGame()
     elif myPlayer.ConnectionOnline == False:
-        slowprint("ERROR: NOT CONNECTED TO A OTHER COMPUTER")
+        slowprint(TextColl.LoginText2)
         StartGame()
     elif myPlayer.ConnectionOnline == True and myPlayer.CableConnected == True:
         while True:
-            slowprint("PLEASE ENTER PIN CODE")
+            slowprint(TextColl.LoginText3)
             option = TextInput()
             if LoginCode == option:
                 myPlayer.LogedIn = True
-                FakeLoading("CONNECTING","LOGIN SUCCESFULL")
+                FakeLoading(TextColl.LoginFakeLoadingText1)
                 StartGame()
             else:
-                slowprint("ERROR: PINCODE INCORRECT, RETURNING TO MENU")
+                slowprint(TextColl.LoginText4)
                 StartGame()
 
 #--------------------------------------------------------------------
@@ -154,24 +195,24 @@ def ChangeAmountMenu():
     os.system('cls||clear')
 
     if myPlayer.CableConnected == False:
-        slowprint("ERROR: NOT CONNECTED TO THE INTERNET")
+        slowprint(TextColl.ChangeAmountText1)
         StartGame()
     elif myPlayer.ConnectionOnline == False:
-        slowprint("ERROR: NOT CONNECTED TO A OTHER COMPUTER")
+        slowprint(TextColl.ChangeAmountText2)
         StartGame()
     elif myPlayer.LogedIn == False:
-        slowprint("ERROR: NOT LOGGED IN")
+        slowprint(TextColl.ChangeAmountText3)
         StartGame()
     else:
-        slowprint("PLEASE ENTER TRANSPORT NUMBER")
+        slowprint(TextColl.ChangeAmountText4)
         while True:
             option = TextInput()
             if option == TransportNumber:
-                FakeLoading("SEARCHING","SEARCH COMPLETED")
+                FakeLoading(TextColl.ChangeAmountFakeLoadingText1)
                 TransportMenu()
                 break
             else:
-                FakeLoading("SEARCHING","SEARCH FAILED")
+                FakeLoading(TextColl.ChangeAmountFakeLoadingText2)
                 StartGame()
                 break
 
@@ -179,51 +220,51 @@ def ChangeAmountMenu():
 def TransportMenu():
     time.sleep(1.00)
     os.system('cls||clear')
-    SlowPrintArray(TransportMenuText, "PLEASE ENTER A COMMAND")
+    SlowPrintArray(TransportMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
 
     while True:
         option = TextInput()
-        if Commands[0] == option: #1 = CANCEL TRANSPORT
-            slowprint("ADMINISTRATOR ACCESS REQUIRED")
-        elif Commands[2] == option: #3 = DELAY TRANSPORT
-            slowprint("ADMINISTRATOR ACCESS REQUIRED")
-        elif Commands[3] == option: #4 = RETURN TO LAST MENU
+        if InputCommands[0] == option: #1 = CANCEL TRANSPORT
+            slowprint(TextColl.TransportText1)
+        elif InputCommands[2] == option: #3 = DELAY TRANSPORT
+            slowprint(TextColl.TransportText1)
+        elif InputCommands[3] == option: #4 = RETURN TO LAST MENU
             StartGame()
             break
-        elif Commands[1] == option: #2 = CHANGE PRISONER AMOUNT FOR TRANSPORT
+        elif InputCommands[1] == option: #2 = CHANGE PRISONER AMOUNT FOR TRANSPORT
             PrisonerAmount()
             break
         else:
-            slowprint("PLEASE ENTER A VALID COMMAND")
+            slowprint(TextColl.PLEASEENTERAVALIDCOMMANDTEXT)
 #--------------------------------------------------------------------
 def PrisonerAmount():
-    slowprint("PLEASE ENTER THE AMOUNT OF PRISONERS THAT NEED TO BE TRANSPORTED")
+    slowprint(TextColl.PrisonerText1)
     while True:
         option = TextInput()
         if option == TransportMinAmount:
             myPlayer.TransportManifestCompleted = True
-            FakeLoading("PROCESSING","TASK COMPLETED PLEASE SAVE THE CHANGES AND CARRY ON WITH YOUR WORK")
+            FakeLoading(TextColl.PrisonerFakeLoadingText1)
             time.sleep(1.00)
             StartGame()
         else:
-            FakeLoading("PROCESSING","ERROR: INVALID NUMBER")
+            FakeLoading(TextColl.PrisonerFakeLoadingText2)
             TransportMenu()
 #--------------------------------------------------------------------
 def ExitMenu():
     os.system('cls||clear')
 
     if myPlayer.TransportManifestCompleted == True:
-        slowprint("FILE CHANGES DETECTED, PLEASE EXIT TO SAVE CHANGES")
+        slowprint(TextColl.ExitMenuText1)
     else:
-        slowprint("NO FILE CHANGES DETECTED, ARE YOU SURE YOU WANT TO EXIT?")
-        slowprint("ALL PROGRESS WILL BE LOST!")
+        slowprint(TextColl.ExitMenuText2)
+        slowprint(TextColl.ExitMenuText3)
 
     print('')
-    SlowPrintArray(ExitMenuText, "PLEASE ENTER A COMMAND")
+    SlowPrintArray(ExitMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
 
     while True:
         option = TextInput()
-        if Commands[0] == option: #1 = YES
+        if InputCommands[0] == option: #1 = YES
             if myPlayer.TransportManifestCompleted == True:
                 myPlayer.GameWon = True
                 #execute opening door code or something here
@@ -238,17 +279,17 @@ def ExitMenu():
                 FirstLoad = True
                 EndScreen(False)
                 break
-        elif Commands[1] == option: #2 = NO
+        elif InputCommands[1] == option: #2 = NO
             StartGame()
             break
 #--------------------------------------------------------------------
 def EndScreen(type):
 
     if type == False: # wrong end, player can start again
-        FullScreenMessage(EndScreenExitGameText)
+        FullScreenMessage(BootScreenUnlockedText)
         while True:
             option = TextInput()
-            if Commands[0] == option:
+            if InputCommands[0] == option:
                 StartGame()
                 break
     elif type == True: # right end
@@ -268,5 +309,91 @@ def TextInput():
         TransportMenu()
     return text
 #--------------------------------------------------------------------
+def SetLanguage(IsEnglish):
 
+    #change all values to a class so we can global everything while not fucking with memory or something
+
+
+    global DevInputText
+    global InputCommands
+    global BootScreenLockedText
+    global BootScreenUnlockedText
+    global EndScreenText
+    global InputCommandsText
+    global TransportMenuText
+    global ExitMenuText
+
+    if IsEnglish == True:
+        DevInputText = TerminalGameLanguage.ENGDevInputText
+        InputCommands = TerminalGameLanguage.ENGInputCommands
+        BootScreenLockedText = TerminalGameLanguage.ENGBootScreenLockedText
+        BootScreenUnlockedText =TerminalGameLanguage.ENGBootScreenUnlockedText
+        EndScreenText = TerminalGameLanguage.ENGEndScreenText
+        InputCommandsText = TerminalGameLanguage.ENGInputCommandsText       
+        TransportMenuText = TerminalGameLanguage.ENGTransportMenuText                 
+        ExitMenuText = TerminalGameLanguage.ENGExitMenuText
+
+        TextColl.FakeLoadingText1 = TerminalGameLanguage.TextColl.ENGFakeLoadingText1
+        TextColl.ACCESSGRANTEDTEXT =  TerminalGameLanguage.TextColl.ENGACCESSGRANTEDTEXT
+        TextColl.PLEASEENTERCOMMANDTEXT = TerminalGameLanguage.TextColl.ENGPLEASEENTERCOMMANDTEXT 
+        TextColl.PLEASEENTERAVALIDCOMMANDTEXT = TerminalGameLanguage.TextColl.ENGPLEASEENTERAVALIDCOMMANDTEXT
+        TextColl.ConnectText1 = TerminalGameLanguage.TextColl.ENGConnectText1 
+        TextColl.ConnectText2 = TerminalGameLanguage.TextColl.ENGConnectText2 
+        TextColl.ConnectText3 = TerminalGameLanguage.TextColl.ENGConnectText3 
+        TextColl.ConnectFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGConnectFakeLoadingText1
+        TextColl.LoginText1 = TerminalGameLanguage.TextColl.ENGLoginText1 
+        TextColl.LoginText2 = TerminalGameLanguage.TextColl.ENGLoginText2 
+        TextColl.LoginText3 = TerminalGameLanguage.TextColl.ENGLoginText3 
+        TextColl.LoginText4 = TerminalGameLanguage.TextColl.ENGLoginText4 
+        TextColl.LoginFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGLoginFakeLoadingText1
+        TextColl.ChangeAmountText1 = TerminalGameLanguage.TextColl.ENGChangeAmountText1 
+        TextColl.ChangeAmountText2 = TerminalGameLanguage.TextColl.ENGChangeAmountText2 
+        TextColl.ChangeAmountText3 = TerminalGameLanguage.TextColl.ENGChangeAmountText3 
+        TextColl.ChangeAmountText4 = TerminalGameLanguage.TextColl.ENGChangeAmountText4 
+        TextColl.ChangeAmountFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGChangeAmountFakeLoadingText1
+        TextColl.ChangeAmountFakeLoadingText2 = TerminalGameLanguage.TextColl.ENGChangeAmountFakeLoadingText2
+        TextColl.TransportText1 = TerminalGameLanguage.TextColl.ENGTransportText1 
+        TextColl.PrisonerFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGPrisonerFakeLoadingText1 
+        TextColl.PrisonerFakeLoadingText2 = TerminalGameLanguage.TextColl.ENGPrisonerFakeLoadingText2 
+        TextColl.ExitMenuText1 = TerminalGameLanguage.TextColl.ENGExitMenuText1 
+        TextColl.ExitMenuText2 = TerminalGameLanguage.TextColl.ENGExitMenuText2 
+        TextColl.ExitMenuText3 = TerminalGameLanguage.TextColl.ENGExitMenuText3 
+    else:
+        DevInputText = TerminalGameLanguage.NLDevInputText
+        InputCommands = TerminalGameLanguage.NLInputCommands
+        BootScreenLockedText = TerminalGameLanguage.NLBootScreenLockedText
+        BootScreenUnlockedText =TerminalGameLanguage.NLBootScreenUnlockedText
+        EndScreenText = TerminalGameLanguage.NLEndScreenText
+        InputCommandsText = TerminalGameLanguage.NLInputCommandsText      
+        TransportMenuText = TerminalGameLanguage.NLTransportMenuText              
+        ExitMenuText = TerminalGameLanguage.NLExitMenuText
+
+        TextColl.FakeLoadingText1 = TerminalGameLanguage.TextColl.NLFakeLoadingText1
+        TextColl.ACCESSGRANTEDTEXT =  TerminalGameLanguage.TextColl.NLACCESSGRANTEDTEXT
+        TextColl.PLEASEENTERCOMMANDTEXT = TerminalGameLanguage.TextColl.NLPLEASEENTERCOMMANDTEXT 
+        TextColl.PLEASEENTERAVALIDCOMMANDTEXT = TerminalGameLanguage.TextColl.NLPLEASEENTERAVALIDCOMMANDTEXT
+        TextColl.ConnectText1 = TerminalGameLanguage.TextColl.NLConnectText1 
+        TextColl.ConnectText2 = TerminalGameLanguage.TextColl.NLConnectText2 
+        TextColl.ConnectText3 = TerminalGameLanguage.TextColl.NLConnectText3 
+        TextColl.ConnectFakeLoadingText1 = TerminalGameLanguage.TextColl.NLConnectFakeLoadingText1 
+        TextColl.LoginText1 = TerminalGameLanguage.TextColl.NLLoginText1 
+        TextColl.LoginText2 = TerminalGameLanguage.TextColl.NLLoginText2 
+        TextColl.LoginText3 = TerminalGameLanguage.TextColl.NLLoginText3 
+        TextColl.LoginText4 = TerminalGameLanguage.TextColl.NLLoginText4 
+        TextColl.LoginFakeLoadingText1 = TerminalGameLanguage.TextColl.NLLoginFakeLoadingText1 
+        TextColl.ChangeAmountText1 = TerminalGameLanguage.TextColl.NLChangeAmountText1 
+        TextColl.ChangeAmountText2 = TerminalGameLanguage.TextColl.NLChangeAmountText2 
+        TextColl.ChangeAmountText3 = TerminalGameLanguage.TextColl.NLChangeAmountText3 
+        TextColl.ChangeAmountText4 = TerminalGameLanguage.TextColl.NLChangeAmountText4 
+        TextColl.ChangeAmountFakeLoadingText1 = TerminalGameLanguage.TextColl.NLChangeAmountFakeLoadingText1
+        TextColl.ChangeAmountFakeLoadingText2 = TerminalGameLanguage.TextColl.NLChangeAmountFakeLoadingText2
+        TextColl.TransportText1 = TerminalGameLanguage.TextColl.NLTransportText1 
+        TextColl.PrisonerFakeLoadingText1 = TerminalGameLanguage.TextColl.NLPrisonerFakeLoadingText1 
+        TextColl.PrisonerFakeLoadingText2 = TerminalGameLanguage.TextColl.NLPrisonerFakeLoadingText2 
+        TextColl.ExitMenuText1 = TerminalGameLanguage.TextColl.NLExitMenuText1 
+        TextColl.ExitMenuText2 = TerminalGameLanguage.TextColl.NLExitMenuText2 
+        TextColl.ExitMenuText3 = TerminalGameLanguage.TextColl.NLExitMenuText3 
+
+
+#--------------------------------------------------------------------
 TitleScreen()
