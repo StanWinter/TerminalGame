@@ -1,5 +1,4 @@
-import cmd,textwrap,sys,os,time,random,math,re
-import TerminalGameLanguage
+import cmd,textwrap,sys,os,time,random,math,re,TerminalGameLanguage
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
 
