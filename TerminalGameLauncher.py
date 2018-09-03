@@ -322,6 +322,7 @@ def SetLanguage(IsEnglish):
     global InputCommandsText
     global TransportMenuText
     global ExitMenuText
+    global TextColl
 
     if IsEnglish == True:
         DevInputText = TerminalGameLanguage.ENGDevInputText
@@ -333,31 +334,7 @@ def SetLanguage(IsEnglish):
         TransportMenuText = TerminalGameLanguage.ENGTransportMenuText                 
         ExitMenuText = TerminalGameLanguage.ENGExitMenuText
 
-        TextColl.FakeLoadingText1 = TerminalGameLanguage.TextColl.ENGFakeLoadingText1
-        TextColl.ACCESSGRANTEDTEXT =  TerminalGameLanguage.TextColl.ENGACCESSGRANTEDTEXT
-        TextColl.PLEASEENTERCOMMANDTEXT = TerminalGameLanguage.TextColl.ENGPLEASEENTERCOMMANDTEXT 
-        TextColl.PLEASEENTERAVALIDCOMMANDTEXT = TerminalGameLanguage.TextColl.ENGPLEASEENTERAVALIDCOMMANDTEXT
-        TextColl.ConnectText1 = TerminalGameLanguage.TextColl.ENGConnectText1 
-        TextColl.ConnectText2 = TerminalGameLanguage.TextColl.ENGConnectText2 
-        TextColl.ConnectText3 = TerminalGameLanguage.TextColl.ENGConnectText3 
-        TextColl.ConnectFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGConnectFakeLoadingText1
-        TextColl.LoginText1 = TerminalGameLanguage.TextColl.ENGLoginText1 
-        TextColl.LoginText2 = TerminalGameLanguage.TextColl.ENGLoginText2 
-        TextColl.LoginText3 = TerminalGameLanguage.TextColl.ENGLoginText3 
-        TextColl.LoginText4 = TerminalGameLanguage.TextColl.ENGLoginText4 
-        TextColl.LoginFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGLoginFakeLoadingText1
-        TextColl.ChangeAmountText1 = TerminalGameLanguage.TextColl.ENGChangeAmountText1 
-        TextColl.ChangeAmountText2 = TerminalGameLanguage.TextColl.ENGChangeAmountText2 
-        TextColl.ChangeAmountText3 = TerminalGameLanguage.TextColl.ENGChangeAmountText3 
-        TextColl.ChangeAmountText4 = TerminalGameLanguage.TextColl.ENGChangeAmountText4 
-        TextColl.ChangeAmountFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGChangeAmountFakeLoadingText1
-        TextColl.ChangeAmountFakeLoadingText2 = TerminalGameLanguage.TextColl.ENGChangeAmountFakeLoadingText2
-        TextColl.TransportText1 = TerminalGameLanguage.TextColl.ENGTransportText1 
-        TextColl.PrisonerFakeLoadingText1 = TerminalGameLanguage.TextColl.ENGPrisonerFakeLoadingText1 
-        TextColl.PrisonerFakeLoadingText2 = TerminalGameLanguage.TextColl.ENGPrisonerFakeLoadingText2 
-        TextColl.ExitMenuText1 = TerminalGameLanguage.TextColl.ENGExitMenuText1 
-        TextColl.ExitMenuText2 = TerminalGameLanguage.TextColl.ENGExitMenuText2 
-        TextColl.ExitMenuText3 = TerminalGameLanguage.TextColl.ENGExitMenuText3 
+        TextColl = TerminalGameLanguage.ENGTextColl
     else:
         DevInputText = TerminalGameLanguage.NLDevInputText
         InputCommands = TerminalGameLanguage.NLInputCommands
@@ -368,32 +345,7 @@ def SetLanguage(IsEnglish):
         TransportMenuText = TerminalGameLanguage.NLTransportMenuText              
         ExitMenuText = TerminalGameLanguage.NLExitMenuText
 
-        TextColl.FakeLoadingText1 = TerminalGameLanguage.TextColl.NLFakeLoadingText1
-        TextColl.ACCESSGRANTEDTEXT =  TerminalGameLanguage.TextColl.NLACCESSGRANTEDTEXT
-        TextColl.PLEASEENTERCOMMANDTEXT = TerminalGameLanguage.TextColl.NLPLEASEENTERCOMMANDTEXT 
-        TextColl.PLEASEENTERAVALIDCOMMANDTEXT = TerminalGameLanguage.TextColl.NLPLEASEENTERAVALIDCOMMANDTEXT
-        TextColl.ConnectText1 = TerminalGameLanguage.TextColl.NLConnectText1 
-        TextColl.ConnectText2 = TerminalGameLanguage.TextColl.NLConnectText2 
-        TextColl.ConnectText3 = TerminalGameLanguage.TextColl.NLConnectText3 
-        TextColl.ConnectFakeLoadingText1 = TerminalGameLanguage.TextColl.NLConnectFakeLoadingText1 
-        TextColl.LoginText1 = TerminalGameLanguage.TextColl.NLLoginText1 
-        TextColl.LoginText2 = TerminalGameLanguage.TextColl.NLLoginText2 
-        TextColl.LoginText3 = TerminalGameLanguage.TextColl.NLLoginText3 
-        TextColl.LoginText4 = TerminalGameLanguage.TextColl.NLLoginText4 
-        TextColl.LoginFakeLoadingText1 = TerminalGameLanguage.TextColl.NLLoginFakeLoadingText1 
-        TextColl.ChangeAmountText1 = TerminalGameLanguage.TextColl.NLChangeAmountText1 
-        TextColl.ChangeAmountText2 = TerminalGameLanguage.TextColl.NLChangeAmountText2 
-        TextColl.ChangeAmountText3 = TerminalGameLanguage.TextColl.NLChangeAmountText3 
-        TextColl.ChangeAmountText4 = TerminalGameLanguage.TextColl.NLChangeAmountText4 
-        TextColl.ChangeAmountFakeLoadingText1 = TerminalGameLanguage.TextColl.NLChangeAmountFakeLoadingText1
-        TextColl.ChangeAmountFakeLoadingText2 = TerminalGameLanguage.TextColl.NLChangeAmountFakeLoadingText2
-        TextColl.TransportText1 = TerminalGameLanguage.TextColl.NLTransportText1 
-        TextColl.PrisonerFakeLoadingText1 = TerminalGameLanguage.TextColl.NLPrisonerFakeLoadingText1 
-        TextColl.PrisonerFakeLoadingText2 = TerminalGameLanguage.TextColl.NLPrisonerFakeLoadingText2 
-        TextColl.ExitMenuText1 = TerminalGameLanguage.TextColl.NLExitMenuText1 
-        TextColl.ExitMenuText2 = TerminalGameLanguage.TextColl.NLExitMenuText2 
-        TextColl.ExitMenuText3 = TerminalGameLanguage.TextColl.NLExitMenuText3 
-
+        TextColl = TerminalGameLanguage.NLTextColl
 
 #--------------------------------------------------------------------
 TitleScreen()
