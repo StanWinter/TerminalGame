@@ -3,7 +3,7 @@ import TerminalGameLanguage
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
 
-# etc
+
 columns, rows = os.get_terminal_size(1)
 FirstLoad = True
 
@@ -11,7 +11,7 @@ FirstLoad = True
 ip = "127.0.0.1"
 LoginCode = "12345"
 TransportNumber = "101"
-TransportMinAmount = "0"
+TransportAmount = 0
 
 # inputs made by player/dev
 DevInputText = ["start","help","quit"]
@@ -29,6 +29,7 @@ TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRAN
                         "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
 ExitMenuText = ["1 = YES", "2 = NO"]
 
+# all other text
 class TextAndInput:
     def __init__(self):
         self.FakeLoadingText1 = ["INSTALLING KEYCRACKER.PY", "INSTALL COMPLETED"]
@@ -60,7 +61,6 @@ class TextAndInput:
 TextColl = TextAndInput()
 
 
-
 # PLAYER DATA
 class player:
     def __init__(self):
@@ -74,8 +74,12 @@ class player:
 myPlayer = player()
 
 # Screen the player will see on startup
-def TitleScreen():
-    SetLanguage(False)
+def TitleScreen():   
+    global TransportAmount
+    TransportAmount = int(GetPlayerAmount()) # get the amount of players
+
+    SetLanguage(False) # True = English, False = Dutch  
+    
     FullScreenMessage(BootScreenLockedText)
     TitleScreen_Selections()
 
@@ -103,12 +107,11 @@ def TitleScreen_Selections():
 
 def StartGame():
     global FirstLoad
-    global TransportMinAmount
+    global TransportAmount
     if FirstLoad == False:
         time.sleep(1.00)
     else:
         FirstLoad = False
-        TransportMinAmount = GetPlayerAmount()
 
     os.system('cls||clear')
     SlowPrintArray(InputCommandsText, TextColl.PLEASEENTERCOMMANDTEXT)
@@ -240,8 +243,8 @@ def TransportMenu():
 def PrisonerAmount():
     slowprint(TextColl.PrisonerText1)
     while True:
-        option = TextInput()
-        if option == TransportMinAmount:
+        option = int(TextInput())
+        if option == TransportAmount:
             myPlayer.TransportManifestCompleted = True
             FakeLoading(TextColl.PrisonerFakeLoadingText1)
             time.sleep(1.00)
