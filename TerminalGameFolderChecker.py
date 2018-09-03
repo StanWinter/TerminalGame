@@ -29,9 +29,9 @@ def GetPlayerAmount():
     for file in FileNamesCut:
         if TextToFind in file:
             number = re.findall('\d+', file)
-            CurrentAmountOfPlayers = int(number[0])
+            return int(number[0])
             #print("amount: " + str(CurrentAmountOfPlayers))
             break
 
-    return CurrentAmountOfPlayers
+    return 0
 #--------------------------------------------------------------------

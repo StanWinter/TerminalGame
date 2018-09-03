@@ -4,7 +4,7 @@ import random
 import math
 import os
 
-columns, rows = os.get_terminal_size(1)
+columns,rows = os.get_terminal_size(1)
 
 # if 0 then all the brackets will appear around the edges
 # if 1 then all the brackets will appear 1 space off the edges
@@ -57,6 +57,7 @@ def SlowPrintArray(array, extraText = ""):
     slowprint(extraText)
 
 def FullScreenMessage(array):
+    columns,rows = get_terminal_size()
     os.system('cls||clear')
     # get all the positions for the start screen
     middlePoint = math.ceil((rows / 2))
@@ -93,3 +94,4 @@ def FullScreenMessage(array):
                     sys.stdout.flush()
 
     print('')
+
