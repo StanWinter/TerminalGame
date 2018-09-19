@@ -9,8 +9,8 @@ FileNamesCut = [" "]
 #--------------------------------------------------------------------
 def GetPlayerAmount():
     global FileNamesRaw
-    del FileNamesRaw[:]
-
+    del FileNamesRaw[:]	
+    
     pathname = os.path.dirname(sys.argv[0])
     #print('path =', pathname)
     #print('path =', pathname+RecieverFolderName)
@@ -25,7 +25,7 @@ def GetPlayerAmount():
     for file in FileNamesRaw:
         FileNamesCut += file.split('.')[:-1]
         #print (FileNamesCut)
-
+				
     for file in FileNamesCut:
         if TextToFind in file:
             number = re.findall('\d+', file)

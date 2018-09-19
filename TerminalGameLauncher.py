@@ -1,6 +1,7 @@
-import cmd,textwrap,sys,os,time,random,math,re,TerminalGameLanguage
+import cmd,textwrap,sys,os,time,random,math,re,TerminalGameLanguage,TerminalGameMYSQL
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
+from TerminalGameMYSQL import PlayersInformation
 
 
 columns, rows = os.get_terminal_size(1)
@@ -71,13 +72,22 @@ class player:
         self.TransportManifestCompleted = False
         self.GameWon = False
 myPlayer = player()
+#mySQL data
+Pinfo = PlayersInformation()
 
 # Screen the player will see on startup
 def TitleScreen():   
+    global Pinfo
     global TransportAmount
-    TransportAmount = int(GetPlayerAmount()) # get the amount of players
 
-    SetLanguage(False) # True = English, False = Dutch  
+    Pinfo = TerminalGameMYSQL.IndexData()
+    if Pinfo.Language == 0:
+        SetLanguage(False) # True = English, False = Dutch  
+    else:
+        SetLanguage(True) # True = English, False = Dutch  
+
+    TransportAmount = Pinfo.PlayerAmount
+    #TransportAmount = int(GetPlayerAmount()) # get the amount of players
     
     FullScreenMessage(BootScreenLockedText)
     TitleScreen_Selections()
