@@ -1,22 +1,24 @@
-#import re
-#import subprocess
-#device_re = re.compile("Bus\s+(?P<bus>\d+)\s+Device\s+(?P<device>\d+).+ID\s(?P<id>\w+:\w+)\s(?P<tag>.+)$", re.I)
-#df = subprocess.check_output("lsusb", shell=True)
+import pyudev
 
-#for i in df.split('\n'):
-#    if i:
-#        info = CalculateChecksum(device_re.match(i))
-#        if info:
-#            dinfo = info.groupdict()
-#            # Uncomment if you wish tags too
-#            #print dinfo.pop('tag')
-#            print (dinfo.pop('id'))
+context = pyudev.Context()
 
-import sys
-import usb.core
-# find USB devices
-dev = usb.core.find(find_all=True)
-# loop through devices, printing vendor and product ids in decimal and hex
-for cfg in dev:
-  sys.stdout.write('Decimal VendorID=' + str(cfg.idVendor) + ' & ProductID=' + str(cfg.idProduct) + '\n')
-  sys.stdout.write('Hexadecimal VendorID=' + hex(cfg.idVendor) + ' & ProductID=' + hex(cfg.idProduct) + '\n\n')
+#for device in context.list_devices(): 
+#    print(device)
+
+def UsbMonitor():
+
+    monitor = pyudev.Monitor.from_netlink(context)
+    monitor.filter_by('block')
+    for device in iter(monitor.poll, None):
+        if 'ID_FS_TYPE' in device:
+            print('{0} partition {1}'.format(device.action, device.get('ID_FS_LABEL')))
+            if device.action == "add":
+                #for now this will work, does not check what kind of usb divice it is 
+                print("True")
+                return
+            else:
+                print("false")
+                return
+
+
+           

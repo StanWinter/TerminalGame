@@ -1,12 +1,14 @@
-import cmd,textwrap,sys,os,time,random,math,re,TerminalGameLanguage,TerminalGameMYSQL
+import cmd,textwrap,sys,os,time,random,math,re,pyudev,ctypes,TerminalGameLanguage,TerminalGameMYSQL,TerminalGameUsbDetector, LanDetector
+import threading,random,queue,subprocess
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
 from TerminalGameMYSQL import PlayersInformation
+import multiprocessing 
+from multiprocessing import Process, Value
 
-
+context = pyudev.Context()
 columns, rows = os.get_terminal_size(1)
 FirstLoad = True
-
 # codes the player needs to enter
 ip = "127.0.0.1"
 LoginCode = "12345"
@@ -79,7 +81,8 @@ Pinfo = PlayersInformation()
 def TitleScreen():   
     global Pinfo
     global TransportAmount
-
+    
+   
     Pinfo = TerminalGameMYSQL.IndexData()
     if Pinfo.Language == 0:
         SetLanguage(False) # True = English, False = Dutch  
@@ -87,8 +90,8 @@ def TitleScreen():
         SetLanguage(True) # True = English, False = Dutch  
 
     TransportAmount = Pinfo.PlayerAmount
-    #TransportAmount = int(GetPlayerAmount()) # get the amount of players
-    
+    #TransportAmount = int(GetPlayerAmount()) # get the amount of players trough file that changed
+
     FullScreenMessage(BootScreenLockedText)
     TitleScreen_Selections()
 
@@ -97,7 +100,7 @@ def TitleScreen():
 def TitleScreen_Selections():
     while True:
         option = TextInput()
-        if option == DevInputText[0]:
+        if option == DevInputText[0] or MPvalue.value == 1:
             myPlayer.GameStarted = True
             os.system('cls||clear')
             FakeLoading(TextColl.FakeLoadingText1)
@@ -110,7 +113,8 @@ def TitleScreen_Selections():
         #     break
         elif option == DevInputText[2]:
             sys.exit()
-        else:
+        elif option is not "":
+            print(option)
             slowprint("DEV START SCREEN ENTER START")
 #--------------------------------------------------------------------
 
@@ -184,6 +188,9 @@ def ConnectMenu():
 def LoginMenu():
     os.system('cls||clear')
 
+    #if LanDetector.getKeyStatus is True:   # THIS IS THE LAN CABLE CONNECTION CHECK, NOT TESTED 
+    #    myPlayer.CableConnected = True
+        
     if myPlayer.CableConnected == False:
         slowprint(TextColl.LoginText1)
         StartGame()
@@ -310,16 +317,29 @@ def EndScreen(type):
 
 # here we can catch text before its used
 def TextInput():
-    text = input().lower()
-    #print(text)
-    if text == "cable":
-        myPlayer.CableConnected = True
-        print("Cable active")
-    elif text == "quit":
-        sys.exit()
-    elif text == "transportmenu":
-        TransportMenu()
-    return text
+    while True:
+        try:
+            text = input().lower()
+            print(text)
+        except SyntaxError: #except EOFError:
+            print("fail")
+            return ""
+        else:
+            if text is "":
+                return ""
+            elif text == "cable":
+                myPlayer.CableConnected = True
+                print("Cable active")
+            elif text == "quit":
+                sys.exit()
+            elif text == "transportmenu":
+                TransportMenu()
+            else:
+                return text
+       # textval.value = text
+       # print("put in:",text)
+       # print("val is:",textval.value)
+    
 #--------------------------------------------------------------------
 def SetLanguage(IsEnglish):
 
@@ -360,4 +380,29 @@ def SetLanguage(IsEnglish):
         TextColl = TerminalGameLanguage.NLTextColl
 
 #--------------------------------------------------------------------
-TitleScreen()
+def UsbMonitor(Tvalue):   
+        monitor = pyudev.Monitor.from_netlink(context)
+        monitor.filter_by('block')
+        for device in iter(monitor.poll, None):
+            if 'ID_FS_TYPE' in device:
+                if device.action == "add":
+                    #print("True")
+                    Tvalue.value = 1
+                    #print(Tvalue.value)
+                else:
+                    #print("false")
+                    Tvalue.value = 0
+                    #print(Tvalue.value)         
+
+#start of the process so we can run the game and check for connections    
+if __name__ == "__main__":
+    manager = multiprocessing.Manager()
+    MPstring = manager.Value(ctypes.c_char_p, "")
+    MPvalue = Value('i',0)
+    p1 = multiprocessing.Process(target=UsbMonitor, args=(MPvalue,))
+    p1.start()
+    TitleScreen()
+
+
+    
+    
