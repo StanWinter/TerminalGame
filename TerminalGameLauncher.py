@@ -255,11 +255,16 @@ def TransportMenu():
     SlowPrintArray(TextColl.TransportMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
 
     while True:
+        CheckForMessage()
         option = TextInput()
         if TextColl.InputCommands[0] == option: #1 = CANCEL TRANSPORT
+            os.system('cls||clear')
             slowprint(TextColl.TransportText1,1)
+            TransportMenu()
         elif TextColl.InputCommands[2] == option: #3 = DELAY TRANSPORT
+            os.system('cls||clear')
             slowprint(TextColl.TransportText1,1)
+            TransportMenu()
         elif TextColl.InputCommands[3] == option: #4 = RETURN TO LAST MENU
             StartGame()
             break
@@ -271,6 +276,7 @@ def TransportMenu():
 #--------------------------------------------------------------------
 #checks if the players enterd the right amount of prisoners 
 def PrisonerAmount():
+    os.system('cls||clear')
     slowprint(TextColl.PrisonerText1)
     while True:
         option = int(TextInput())
@@ -393,9 +399,6 @@ def CheckForMessage():
        if Pinfo.LastMessage is not "":
            print("")
            slowprint(Pinfo.LastMessage,3)
-           print(uid)
-       else:
-           print(uid)
     
    
 
