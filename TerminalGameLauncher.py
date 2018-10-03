@@ -1,39 +1,44 @@
-import cmd,textwrap,sys,os,time,random,math,re,pyudev,ctypes,TerminalGameLanguage,TerminalGameMYSQL,TerminalGameUsbDetector, LanDetector
-import threading,random,queue,subprocess
+import cmd,textwrap,sys,os,time,random,math,re,pyudev,multiprocessing,datetime
+import TerminalGameLanguage,TerminalGameMYSQL,TerminalGameUsbDetector#, LanDetector
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 from TerminalGameFolderChecker import GetPlayerAmount
-from TerminalGameMYSQL import PlayersInformation
-import multiprocessing 
+from TerminalGameMYSQL import PlayersInformation 
 from multiprocessing import Process, Value
 
 context = pyudev.Context()
 columns, rows = os.get_terminal_size(1)
 FirstLoad = True
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+DEVMODE = True # SET TO FALSE IF NOT USED
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # codes the player needs to enter
 ip = "127.0.0.1"
 LoginCode = "12345"
 TransportNumber = "101"
 TransportAmount = 0
 
-# inputs made by player/dev
-DevInputText = ["start","help","quit"]
-InputCommands = ["1","2","3","4"]
+#data we get from MYSQL
+LastMessageTime = "2000-10-02 01:03:46" #just leave this
+uid = 0
 
-# screen text for special screens
-BootScreenLockedText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
-BootScreenUnlockedText = ["SYSTEM UNLOCKED","PLEASE ENTER 1 TO START"]
-EndScreenText = ["CHANGES SAVED","PLEASE TRANSPORT THE PRISONERS"]
-
-# options text shown to the player
-InputCommandsText = ["1 = CONNECT TO COMPUTER","2 = LOGIN TO COMPUTER",
-                        "3 = EDIT PRISONER TRANSPORT MANIFEST","4 = SAVE CHANGES AND EXIT"]
-TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRANSPORT",
-                        "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
-ExitMenuText = ["1 = YES", "2 = NO"]
-
-# all other text
 class TextAndInput:
     def __init__(self):
+        # inputs made by player/dev
+        self.DevInputText = ["start","help","quit"]
+        self.InputCommands = ["1","2","3","4"]
+        # screen text for special screens
+        self.BootScreenLockedText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
+        self.BootScreenUnlockedText = ["SYSTEM UNLOCKED","PLEASE ENTER 1 TO START"]
+        self.EndScreenText = ["CHANGES SAVED","PLEASE TRANSPORT THE PRISONERS"]
+        # options text shown to the player
+        self.InputCommandsText = ["1 = CONNECT TO COMPUTER","2 = LOGIN TO COMPUTER",
+                          "3 = EDIT PRISONER TRANSPORT MANIFEST","4 = SAVE CHANGES AND EXIT"]
+        self.TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRANSPORT",
+                          "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
+        self.ExitMenuText = ["1 = YES", "2 = NO"]
+        # all other text
         self.FakeLoadingText1 = ["INSTALLING KEYCRACKER.PY", "INSTALL COMPLETED"]
         self.ACCESSGRANTEDTEXT = "ACCESS GRANTED"
         self.PLEASEENTERCOMMANDTEXT = "PLEASE ENTER A COMMAND"
@@ -77,47 +82,50 @@ myPlayer = player()
 #mySQL data
 Pinfo = PlayersInformation()
 
+#--------------------------------------------------------------------
 # Screen the player will see on startup
-def TitleScreen():   
+def TitleScreen(): 
+        
     global Pinfo
     global TransportAmount
-    
-   
+      
     Pinfo = TerminalGameMYSQL.IndexData()
     if Pinfo.Language == 0:
         SetLanguage(False) # True = English, False = Dutch  
     else:
         SetLanguage(True) # True = English, False = Dutch  
 
+    uid = Pinfo.UID
     TransportAmount = Pinfo.PlayerAmount
     #TransportAmount = int(GetPlayerAmount()) # get the amount of players trough file that changed
 
-    FullScreenMessage(BootScreenLockedText)
-    TitleScreen_Selections()
-
+    FullScreenMessage(TextColl.BootScreenLockedText)
+    TitleScreen_Selections()       
 #--------------------------------------------------------------------
-# selection menu (for dev purposes)
-def TitleScreen_Selections():
-    while True:
-        option = TextInput()
-        if option == DevInputText[0] or MPvalue.value == 1:
+# checks if the usb is connected or if a dev enterd a command
+def TitleScreen_Selections():   
+    while True:      
+        option = ""
+        if DEVMODE is True:
+            option = TextInput()
+        if option == TextColl.DevInputText[0] or MPvalue.value == 1:
             myPlayer.GameStarted = True
             os.system('cls||clear')
             FakeLoading(TextColl.FakeLoadingText1)
-            slowprint(TextColl.ACCESSGRANTEDTEXT)
+            slowprint(TextColl.ACCESSGRANTEDTEXT,2)
             time.sleep(2.00)
             StartGame()
             break
         # elif option == StartMenuText[1]:
         #     HelpMenu()
         #     break
-        elif option == DevInputText[2]:
+        elif option == TextColl.DevInputText[2]:
             sys.exit()
         elif option is not "":
             print(option)
             slowprint("DEV START SCREEN ENTER START")
 #--------------------------------------------------------------------
-
+#main menu
 def StartGame():
     global FirstLoad
     global TransportAmount
@@ -127,19 +135,20 @@ def StartGame():
         FirstLoad = False
 
     os.system('cls||clear')
-    SlowPrintArray(InputCommandsText, TextColl.PLEASEENTERCOMMANDTEXT)
+    SlowPrintArray(TextColl.InputCommandsText, TextColl.PLEASEENTERCOMMANDTEXT)
     while True:
+        CheckForMessage()
         option = TextInput()
-        if InputCommands[0] == option: #1 = CONNECT TO COMPUTER
+        if TextColl.InputCommands[0] == option: #1 = CONNECT TO COMPUTER
             ConnectMenu()
             break
-        elif InputCommands[1] == option: #2 = LOGIN TO COMPUTER
+        elif TextColl.InputCommands[1] == option: #2 = LOGIN TO COMPUTER
             LoginMenu()
             break
-        elif InputCommands[2] == option: #3 = EDIT PRISONER TRANSPORT MANIFEST
+        elif TextColl.InputCommands[2] == option: #3 = EDIT PRISONER TRANSPORT MANIFEST
             ChangeAmountMenu()
             break
-        elif InputCommands[3] == option: #4 = SAVE CAHNGES AND EXIT
+        elif TextColl.InputCommands[3] == option: #4 = SAVE CAHNGES AND EXIT
             ExitMenu()
             break
         else:
@@ -164,11 +173,15 @@ def HelpMenu():
     else:
         StartGame()
 #--------------------------------------------------------------------
+#checks if the players connected the lan cable
 def ConnectMenu():
     os.system('cls||clear')
 
+    #if LanDetector.getKeyStatus is True:   # THIS IS THE LAN CABLE CONNECTION CHECK, NOT TESTED !!!!!!!!!!!!!!!!!!!!!!!!!
+    #    myPlayer.CableConnected = True
+
     if myPlayer.CableConnected == False:
-        slowprint(TextColl.ConnectText1)
+        slowprint(TextColl.ConnectText1,1)
         StartGame()
     else:
         slowprint(TextColl.ConnectText2)
@@ -181,21 +194,19 @@ def ConnectMenu():
                 StartGame()
                 break
             else:
-                slowprint(TextColl.ConnectText3)
+                slowprint(TextColl.ConnectText3,1)
                 StartGame()
                 break
 #--------------------------------------------------------------------
+#checks if the players connected the lan cable, if so it checks for the right login code/password
 def LoginMenu():
     os.system('cls||clear')
-
-    #if LanDetector.getKeyStatus is True:   # THIS IS THE LAN CABLE CONNECTION CHECK, NOT TESTED 
-    #    myPlayer.CableConnected = True
-        
+       
     if myPlayer.CableConnected == False:
-        slowprint(TextColl.LoginText1)
+        slowprint(TextColl.LoginText1,1)
         StartGame()
     elif myPlayer.ConnectionOnline == False:
-        slowprint(TextColl.LoginText2)
+        slowprint(TextColl.LoginText2,1)
         StartGame()
     elif myPlayer.ConnectionOnline == True and myPlayer.CableConnected == True:
         while True:
@@ -206,21 +217,22 @@ def LoginMenu():
                 FakeLoading(TextColl.LoginFakeLoadingText1)
                 StartGame()
             else:
-                slowprint(TextColl.LoginText4)
+                slowprint(TextColl.LoginText4,1)
                 StartGame()
 
 #--------------------------------------------------------------------
+#prisoner menu, checks if the players enterd the right transport number
 def ChangeAmountMenu():
     os.system('cls||clear')
 
     if myPlayer.CableConnected == False:
-        slowprint(TextColl.ChangeAmountText1)
+        slowprint(TextColl.ChangeAmountText1,1)
         StartGame()
     elif myPlayer.ConnectionOnline == False:
-        slowprint(TextColl.ChangeAmountText2)
+        slowprint(TextColl.ChangeAmountText2,1)
         StartGame()
     elif myPlayer.LogedIn == False:
-        slowprint(TextColl.ChangeAmountText3)
+        slowprint(TextColl.ChangeAmountText3,1)
         StartGame()
     else:
         slowprint(TextColl.ChangeAmountText4)
@@ -231,31 +243,33 @@ def ChangeAmountMenu():
                 TransportMenu()
                 break
             else:
-                FakeLoading(TextColl.ChangeAmountFakeLoadingText2)
+                FakeLoading(TextColl.ChangeAmountFakeLoadingText2,1)
                 StartGame()
                 break
 
 #--------------------------------------------------------------------
+#transport menu, simply a selection menu for new options
 def TransportMenu():
     time.sleep(1.00)
     os.system('cls||clear')
-    SlowPrintArray(TransportMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
+    SlowPrintArray(TextColl.TransportMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
 
     while True:
         option = TextInput()
-        if InputCommands[0] == option: #1 = CANCEL TRANSPORT
-            slowprint(TextColl.TransportText1)
-        elif InputCommands[2] == option: #3 = DELAY TRANSPORT
-            slowprint(TextColl.TransportText1)
-        elif InputCommands[3] == option: #4 = RETURN TO LAST MENU
+        if TextColl.InputCommands[0] == option: #1 = CANCEL TRANSPORT
+            slowprint(TextColl.TransportText1,1)
+        elif TextColl.InputCommands[2] == option: #3 = DELAY TRANSPORT
+            slowprint(TextColl.TransportText1,1)
+        elif TextColl.InputCommands[3] == option: #4 = RETURN TO LAST MENU
             StartGame()
             break
-        elif InputCommands[1] == option: #2 = CHANGE PRISONER AMOUNT FOR TRANSPORT
+        elif TextColl.InputCommands[1] == option: #2 = CHANGE PRISONER AMOUNT FOR TRANSPORT
             PrisonerAmount()
             break
         else:
             slowprint(TextColl.PLEASEENTERAVALIDCOMMANDTEXT)
 #--------------------------------------------------------------------
+#checks if the players enterd the right amount of prisoners 
 def PrisonerAmount():
     slowprint(TextColl.PrisonerText1)
     while True:
@@ -266,27 +280,29 @@ def PrisonerAmount():
             time.sleep(1.00)
             StartGame()
         else:
-            FakeLoading(TextColl.PrisonerFakeLoadingText2)
+            FakeLoading(TextColl.PrisonerFakeLoadingText2,1)
             TransportMenu()
 #--------------------------------------------------------------------
+# the games exit menu when the player wants to "exit the program"
 def ExitMenu():
     os.system('cls||clear')
 
     if myPlayer.TransportManifestCompleted == True:
         slowprint(TextColl.ExitMenuText1)
     else:
-        slowprint(TextColl.ExitMenuText2)
-        slowprint(TextColl.ExitMenuText3)
+        slowprint(TextColl.ExitMenuText2,1)
+        slowprint(TextColl.ExitMenuText3,1)
 
     print('')
-    SlowPrintArray(ExitMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
+    SlowPrintArray(TextColl.ExitMenuText, TextColl.PLEASEENTERCOMMANDTEXT)
 
     while True:
         option = TextInput()
-        if InputCommands[0] == option: #1 = YES
+        if TextColl.InputCommands[0] == option: #1 = YES
             if myPlayer.TransportManifestCompleted == True:
                 myPlayer.GameWon = True
-                #execute opening door code or something here
+                #execute opening door code or something here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                print("execute opening door code or something here")
                 EndScreen(True)
                 break
             else:
@@ -298,31 +314,30 @@ def ExitMenu():
                 FirstLoad = True
                 EndScreen(False)
                 break
-        elif InputCommands[1] == option: #2 = NO
+        elif TextColl.InputCommands[1] == option: #2 = NO
             StartGame()
             break
 #--------------------------------------------------------------------
+#show the end screen with the right text
 def EndScreen(type):
-
     if type == False: # wrong end, player can start again
-        FullScreenMessage(BootScreenUnlockedText)
+        FullScreenMessage(TextColl.BootScreenUnlockedText)
         while True:
             option = TextInput()
-            if InputCommands[0] == option:
+            if TextColl.InputCommands[0] == option:
                 StartGame()
                 break
     elif type == True: # right end
-        FullScreenMessage(EndScreenText)
+        FullScreenMessage(TextColl.EndScreenText)
+        RestartCountDown()
 #--------------------------------------------------------------------
-
-# here we can catch text before its used
+# WHEN THIS FUNCTION IS CALLED IT WONT END UNTILL THE USER PRESSES ENTER
+# here we can catch text before its used.
 def TextInput():
     while True:
         try:
             text = input().lower()
-            print(text)
         except SyntaxError: #except EOFError:
-            print("fail")
             return ""
         else:
             if text is "":
@@ -339,47 +354,11 @@ def TextInput():
        # textval.value = text
        # print("put in:",text)
        # print("val is:",textval.value)
-    
+   
 #--------------------------------------------------------------------
-def SetLanguage(IsEnglish):
-
-    #change all values to a class so we can global everything while not fucking with memory or something
-
-
-    global DevInputText
-    global InputCommands
-    global BootScreenLockedText
-    global BootScreenUnlockedText
-    global EndScreenText
-    global InputCommandsText
-    global TransportMenuText
-    global ExitMenuText
-    global TextColl
-
-    if IsEnglish == True:
-        DevInputText = TerminalGameLanguage.ENGDevInputText
-        InputCommands = TerminalGameLanguage.ENGInputCommands
-        BootScreenLockedText = TerminalGameLanguage.ENGBootScreenLockedText
-        BootScreenUnlockedText =TerminalGameLanguage.ENGBootScreenUnlockedText
-        EndScreenText = TerminalGameLanguage.ENGEndScreenText
-        InputCommandsText = TerminalGameLanguage.ENGInputCommandsText       
-        TransportMenuText = TerminalGameLanguage.ENGTransportMenuText                 
-        ExitMenuText = TerminalGameLanguage.ENGExitMenuText
-
-        TextColl = TerminalGameLanguage.ENGTextColl
-    else:
-        DevInputText = TerminalGameLanguage.NLDevInputText
-        InputCommands = TerminalGameLanguage.NLInputCommands
-        BootScreenLockedText = TerminalGameLanguage.NLBootScreenLockedText
-        BootScreenUnlockedText =TerminalGameLanguage.NLBootScreenUnlockedText
-        EndScreenText = TerminalGameLanguage.NLEndScreenText
-        InputCommandsText = TerminalGameLanguage.NLInputCommandsText      
-        TransportMenuText = TerminalGameLanguage.NLTransportMenuText              
-        ExitMenuText = TerminalGameLanguage.NLExitMenuText
-
-        TextColl = TerminalGameLanguage.NLTextColl
-
-#--------------------------------------------------------------------
+#THIS CODE IS BEING RUN AS A PROCESS! ALL DATA IS BEING RETURED IN Tvalue, SO DONT USE return       
+#the code checks if a usb device is being connected or disconnected
+#connected returns 1, disconnected returns 0
 def UsbMonitor(Tvalue):   
         monitor = pyudev.Monitor.from_netlink(context)
         monitor.filter_by('block')
@@ -392,17 +371,60 @@ def UsbMonitor(Tvalue):
                 else:
                     #print("false")
                     Tvalue.value = 0
-                    #print(Tvalue.value)         
+                    #print(Tvalue.value)  
+#--------------------------------------------------------------------
+def SetLanguage(IsEnglish):
 
+    global TextColl
+
+    if IsEnglish == True:
+        TextColl = TerminalGameLanguage.ENGTextColl
+    else:
+        TextColl = TerminalGameLanguage.NLTextColl
+
+#--------------------------------------------------------------------    
+def CheckForMessage():
+    global LastMessageTime
+    Pinfo = TerminalGameMYSQL.IndexData()
+    uid = Pinfo.UID
+    if Pinfo.DateAndTime > datetime.datetime.strptime(str(LastMessageTime), '%Y-%m-%d %H:%M:%S'):       
+       LastMessageTime = datetime.datetime.strptime(str(Pinfo.DateAndTime), '%Y-%m-%d %H:%M:%S')
+     
+       if Pinfo.LastMessage is not "":
+           print("")
+           slowprint(Pinfo.LastMessage,3)
+           print(uid)
+       else:
+           print(uid)
+    
+   
+
+    
+#-------------------------------------------------------------------- 
+def RestartCountDown():
+    Pinfo = TerminalGameMYSQL.IndexData()
+    uid = Pinfo.UID
+
+    if DEVMODE == True:
+        time.sleep(5)
+    else:
+        while True:
+            Pinfo = TerminalGameMYSQL.IndexData()
+            if Pinfo.UID > uid:
+                #print("true pinfo = ",Pinfo.UID," old uid: ",uid)
+                os.execv(sys.executable, ['python3'] + sys.argv)
+            else:
+                #print("false pinfo = ",Pinfo.UID," old uid: ",uid)
+                time.sleep(10)
+    
+#-------------------------------------------------------------------- 
 #start of the process so we can run the game and check for connections    
 if __name__ == "__main__":
-    manager = multiprocessing.Manager()
-    MPstring = manager.Value(ctypes.c_char_p, "")
     MPvalue = Value('i',0)
     p1 = multiprocessing.Process(target=UsbMonitor, args=(MPvalue,))
-    p1.start()
+    p1.deamon = True
+    p1.start()  
     TitleScreen()
-
 
     
     

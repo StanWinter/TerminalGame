@@ -21,6 +21,17 @@ ENGExitMenuText = ["1 = YES", "2 = NO"]
 # misc text
 class TextAndInput:
     def __init__(self):
+        self.DevInputText = ["start","help","quit"]
+        self.InputCommands = ["1","2","3","4"]
+        self.BootScreenLockedText = ["SYSTEM LOCKED","PLEASE INSERT USB KEY"]
+        self.BootScreenUnlockedText = ["SYSTEM UNLOCKED","PLEASE ENTER 1 TO START"]
+        self.EndScreenText = ["CHANGES SAVED","PLEASE TRANSPORT THE PRISONERS"]
+
+        self.InputCommandsText = ["1 = CONNECT TO COMPUTER","2 = LOGIN TO COMPUTER",
+                          "3 = EDIT PRISONER TRANSPORT MANIFEST","4 = SAVE CHANGES AND EXIT"]
+        self.TransportMenuText = ["1 = CANCEL TRANSPORT","2 = CHANGE PRISONER AMOUNT FOR TRANSPORT",
+                          "3 = DELAY TRANSPORT","4 = RETURN TO LAST MENU"]
+        self.ExitMenuText = ["1 = YES", "2 = NO"]
         self.FakeLoadingText1 = ["INSTALLING KEYCRACKER.PY", "INSTALL COMPLETED"]
         self.ACCESSGRANTEDTEXT = "ACCESS GRANTED"
         self.PLEASEENTERCOMMANDTEXT = "PLEASE ENTER A COMMAND"
@@ -72,6 +83,16 @@ NLExitMenuText = ["1 = JA", "2 = NEE"]
 # misc text
 class TextAndInput:
     def __init__(self):
+        self.DevInputText = ["start","help","quit"]
+        self.InputCommands = ["1","2","3","4"]
+        self.BootScreenLockedText = ["SYSTEEM GESLOTEN","VOER USB-SLEUTEL IN A.U.B."]
+        self.BootScreenUnlockedText = ["SYSTEEM OPEN","VOER 1 IN OM TE STARTEN"]
+        self.EndScreenText = ["AANPASSINGEN OPGESLAGEN","VERVOER NU DE GEVANGENEN"]
+        self.InputCommandsText = ["1 = VERBIND MET EEN COMPUTER","2 = LOGIN OP EEN COMPUTER",
+                           "3 = BEWERK LIJST GEVANGENENVERVOER","4 = SLA AANPASSINGEN OP EN GA TERUG"]
+        self.TransportMenuText = ["1 = ANNULEER GEVANGENENVERVOER","2 = VERANDER HOEVEELHEID GEVANGENEN VOOR TRANSPORT",
+                          "3 = STEL TRANSPORT UIT","4 = GA TERUG NA HET LAATSTE MENU"]
+        self.ExitMenuText = ["1 = JA", "2 = NEE"]
         self.FakeLoadingText1 = ["KEYCRACKER.PY AAN HET INSTALEREN", "INSTALATIE VOLTOOID"]
         self.ACCESSGRANTEDTEXT = "TOEGANG VERLEEND"
         self.PLEASEENTERCOMMANDTEXT = "VOER EEN OPDRACHT IN"
