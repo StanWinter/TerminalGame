@@ -93,7 +93,18 @@ def SlowPrintArray(array, extraText = ""):
     print('')
     slowprint(extraText, 2)
 
-def FullScreenMessage(array):
+def FullScreenMessage(array, option = 2):
+    c1 = option
+    if option is not 2:
+        if option == 0:
+            c1 = 0
+        elif option == 1:
+            c1 = 1
+        elif option == 2:
+            c1 = 2
+        elif option == 3:
+            c1 = 3
+
     os.system('cls||clear')
     # get all the positions for the start screen
     middlePoint = math.ceil((rows / 2))
@@ -103,17 +114,17 @@ def FullScreenMessage(array):
     for x in range(rows-1):
         for number in range(columns):
             if x == (0 + BracketDisplacement) and number > BracketDisplacement and number < (columns-1 -BracketDisplacement) or x == (rows - 2  -BracketDisplacement) and number > BracketDisplacement and number <(columns-1 -BracketDisplacement):
-                sys.stdout.write(color[2]+"#"+'\033[0m')
+                sys.stdout.write(color[c1]+"#"+'\033[0m')
                 sys.stdout.flush()
             else:
                 if number == (0 + BracketDisplacement) and x > BracketDisplacement-1 and x < (rows-1-BracketDisplacement) or number == (columns-1 -BracketDisplacement) and x > BracketDisplacement-1 and x <(rows-1 -BracketDisplacement):
-                    sys.stdout.write(color[2]+"#"+'\033[0m')
+                    sys.stdout.write(color[c1]+"#"+'\033[0m')
                     sys.stdout.flush()
                 elif x == middlePoint and number >= textstart and number <= (textstart + (len(array[0])-1)):
                         textcount = 0
                         for character in array[0]:
                             if textcount == (number - (textstart)):
-                                sys.stdout.write(color[2]+character+'\033[0m')
+                                sys.stdout.write(color[c1]+character+'\033[0m')
                                 sys.stdout.flush()
                                 continue
                             textcount +1
@@ -121,12 +132,12 @@ def FullScreenMessage(array):
                         textcount = 0
                         for character in array[1]:
                             if textcount == (number - (textstart2)):
-                                sys.stdout.write(color[2]+character+'\033[0m')
+                                sys.stdout.write(color[c1]+character+'\033[0m')
                                 sys.stdout.flush()
                                 continue
                             textcount +1
                 else:
-                    sys.stdout.write(color[2]+" "+'\033[0m')
+                    sys.stdout.write(color[c1]+" "+'\033[0m')
                     sys.stdout.flush()
 
     print('')

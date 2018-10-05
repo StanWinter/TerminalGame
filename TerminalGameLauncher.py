@@ -1,7 +1,7 @@
-import cmd,textwrap,sys,os,time,random,math,re,pyudev,multiprocessing,datetime
-import TerminalGameLanguage,TerminalGameMYSQL,TerminalGameUsbDetector#, LanDetector
+import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime
+import TerminalGameLanguage,TerminalGameMYSQL#, LanDetector
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
-from TerminalGameFolderChecker import GetPlayerAmount
+#from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
 from TerminalGameMYSQL import PlayersInformation 
 from multiprocessing import Process, Value
 
@@ -99,7 +99,7 @@ def TitleScreen():
     TransportAmount = Pinfo.PlayerAmount
     #TransportAmount = int(GetPlayerAmount()) # get the amount of players trough file that changed
 
-    FullScreenMessage(TextColl.BootScreenLockedText)
+    FullScreenMessage(TextColl.BootScreenLockedText,1)
     TitleScreen_Selections()       
 #--------------------------------------------------------------------
 # checks if the usb is connected or if a dev enterd a command
