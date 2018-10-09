@@ -10,7 +10,7 @@ columns, rows = os.get_terminal_size(1)
 FirstLoad = True
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-DEVMODE = True # SET TO FALSE IF NOT USED
+DEVMODE = False # SET TO FALSE IF NOT USED
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # codes the player needs to enter
@@ -373,6 +373,7 @@ def UsbMonitor(Tvalue):
                 if device.action == "add":
                     #print("True")
                     Tvalue.value = 1
+                    return
                     #print(Tvalue.value)
                 else:
                     #print("false")
