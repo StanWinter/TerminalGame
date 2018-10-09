@@ -16,13 +16,25 @@ if (!$conn) {
  
 echo "Connected successfully";
 
+$GameNumber = $_POST['GameNumber'];
 $players = $_POST['players'];
-$hint = $_POST['hint'];
 $language = $_POST['language'];
 $Message = $_POST['Message'];
+$langInt = 0;
+
+echo $Message;
+
+if($language == "Nederlands")
+{
+	$langInt = 1;
+}
+else
+{
+	$langInt = 0;
+}
 
  
-$sql = "INSERT INTO hack (players, hint, language, Message) VALUES ('$players', '$hint', '$language', '$Message')";
+$sql = "INSERT INTO hack (GameNumber, players, language, Message) VALUES ('$GameNumber', '$players', '$langInt', '$Message')";
 if (mysqli_query($conn, $sql)) {
       echo "New record created successfully";
 } else {
@@ -30,6 +42,6 @@ if (mysqli_query($conn, $sql)) {
 }
 mysqli_close($conn);
 
-header("refresh:2; url=index.html")
+//header("refresh:2; url=index.html")
 
 ?>
