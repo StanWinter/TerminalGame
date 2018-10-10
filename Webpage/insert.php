@@ -14,15 +14,11 @@ if (!$conn) {
       die("Connection failed: " . mysqli_connect_error());
 }
  
-echo "Connected successfully";
-
 $GameNumber = $_POST['GameNumber'];
 $players = $_POST['players'];
 $language = $_POST['language'];
 $Message = $_POST['Message'];
 $langInt = 0;
-
-echo $Message;
 
 if($language == "Nederlands")
 {
@@ -36,12 +32,12 @@ else
  
 $sql = "INSERT INTO hack (GameNumber, players, language, Message) VALUES ('$GameNumber', '$players', '$langInt', '$Message')";
 if (mysqli_query($conn, $sql)) {
-      echo "New record created successfully";
+      //echo "New record created successfully";
 } else {
-      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+      //echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
 mysqli_close($conn);
 
-//header("refresh:2; url=index.html")
+header("refresh:1; url=index.php")
 
 ?>
