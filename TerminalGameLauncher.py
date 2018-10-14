@@ -1,5 +1,6 @@
-import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json,urllib.request
-import TerminalGameLanguage,TerminalGameMYSQL#, LanDetector
+import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json,urllib,urllib.request
+import TerminalGameLanguage,TerminalGameMYSQL
+import RPi.GPIO as GPIO
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 #from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
 from TerminalGameMYSQL import PlayersInformation 
@@ -24,6 +25,12 @@ TransportAmount = 0
 #data we get from MYSQL
 LastMessageTime = "2000-10-02 01:03:46" #just leave this
 uid = 0
+
+#gpio variables for lan connection test
+GPIO.setmode(GPIO.BCM) #referring to the pins by the "Broadcom SOC channel" number
+GPIO.setwarnings(False) #disable GPIO warnings
+keyBtnGpio = 18
+GPIO.setup(keyBtnGpio, GPIO.IN, pull_up_down=GPIO.PUD_UP) #key
 
 class TextAndInput:
     def __init__(self):
@@ -112,6 +119,7 @@ def TitleScreen_Selections():
             option = TextInput()
         if option == TextColl.DevInputText[0] or MPvalue.value == 1:
             myPlayer.GameStarted = True
+            #SendProgress(10)
             os.system('cls||clear')
             FakeLoading(TextColl.FakeLoadingText1)
             slowprint(TextColl.ACCESSGRANTEDTEXT,2)
@@ -179,8 +187,8 @@ def HelpMenu():
 def ConnectMenu():
     os.system('cls||clear')
 
-    #if LanDetector.getKeyStatus is True:   # THIS IS THE LAN CABLE CONNECTION CHECK, NOT TESTED !!!!!!!!!!!!!!!!!!!!!!!!!
-    #    myPlayer.CableConnected = True
+    if DEVMODE == False:
+        myPlayer.CableConnected = CheckLanConnection()
 
     if myPlayer.CableConnected == False:
         slowprint(TextColl.ConnectText1,1)
@@ -420,13 +428,20 @@ def RestartCountDown():
                 time.sleep(10)
     
 #-------------------------------------------------------------------- 
-def SendJsonUpdate(value):
-    url = "http://10.0.0.10:8080/json.htm?type=command&param=udevice&idx=26&nvalue="+value+"0&svalue=;"
+def SendProgress(value):
+    url = "http://10.0.0.10:8080/json.htm?type=command&param=udevice&idx=26&nvalue="+str(value)+"0&svalue=;"
     urllib.request.urlopen(url)
-    #payload = {'name': 'bob', 'job': 'driver'}
-    #r = request.post('https://reqres.in/api/users',json=payload)
-    #print(r.text)
-    #10.0.0.110:8080/
+
+#    #payload = {'name': 'bob', 'job': 'driver'}
+#    #r = request.post('https://reqres.in/api/users',json=payload)
+#    #print(r.text)
+#    #10.0.0.110:8080/
+#-------------------------------------------------------------------- 
+def CheckLanConnection(): #Checks if the btn is pressed. If this is the case it returns True
+        if GPIO.input(keyBtnGpio) == False:
+            return True
+        else:
+            return False
 #-------------------------------------------------------------------- 
 #start of the process so we can run the game and check for connections    
 if __name__ == "__main__":
