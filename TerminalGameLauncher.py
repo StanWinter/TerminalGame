@@ -1,9 +1,11 @@
-import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime
+import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json
 import TerminalGameLanguage,TerminalGameMYSQL#, LanDetector
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 #from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
 from TerminalGameMYSQL import PlayersInformation 
 from multiprocessing import Process, Value
+from flask import Flask, request
+app = Flask(__name__)
 
 context = pyudev.Context()
 columns, rows = os.get_terminal_size(1)
@@ -399,11 +401,7 @@ def CheckForMessage():
      
        if Pinfo.LastMessage is not "":
            print("")
-           slowprint(Pinfo.LastMessage,3)
-    
-   
-
-    
+           slowprint(Pinfo.LastMessage,3)  
 #-------------------------------------------------------------------- 
 def RestartCountDown():
     Pinfo = TerminalGameMYSQL.IndexData()
@@ -422,6 +420,12 @@ def RestartCountDown():
                 time.sleep(10)
     
 #-------------------------------------------------------------------- 
+def SendJsonUpdate():
+    payload = {'name': 'bob', 'job': 'driver'}
+    r = request.post('https://reqres.in/api/users',json=payload)
+    print(r.text)
+    #10.0.0.110:8080/
+#-------------------------------------------------------------------- 
 #start of the process so we can run the game and check for connections    
 if __name__ == "__main__":
     MPvalue = Value('i',0)
@@ -429,6 +433,7 @@ if __name__ == "__main__":
     p1.deamon = True
     p1.start()  
     TitleScreen()
+    #SendJsonUpdate()
 
     
     

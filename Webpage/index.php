@@ -84,12 +84,12 @@ else{
 
     <div class="container-contact100">
         <div class="wrap-contact100">
-		<table class='display'>
+		
             <form class="contact100-form validate-form" action="" method="post">
                 <span class="contact100-form-title">
                     Huidig Spel
                 </span>
-				<tr>
+				
                 <div class="wrap-input100 bg1 rs1-wrap-input100" data-validate="Please Type Your Name">
                     <span class="label-input100">Entry Nummer</span>
                     <span class="input100"><b><?php print $uid ?></span>
@@ -120,22 +120,22 @@ else{
                     <span class="label-input100">Message</span>
                    <span class="input100"><b><?php print $Message ?></span>
                 </div>
-				</tr>
+				
             </form>
-      </table>
+      
             <form class="contact100-form validate-form" action="insert.php" method="post">
                 <span class="contact100-form-title">
                     Terminal Game Instellingen
                 </span>
 
-                <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="Please Type Your Name">
+                <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="Voer een nummer in">
                     <span class="label-input100">Spel nummer</span>
-                    <input class="input100" type="number" name="GameNumber" placeholder="spel nummer">
+                    <input class="input100" type="number" name="GameNumber" placeholder=<?php print $GameNumber ?> >
                 </div>
 
-                <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="spelers">
+                <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="voer aantal spelers in">
                     <span class="label-input100">Aantal Spelers</span>
-                    <input class="input100" type="number" name="players" placeholder="spelers ">
+                    <input class="input100" type="number" name="players" placeholder=<?php print $players ?>>
                 </div>
 
                 <div class="wrap-input100 input100-select bg1">
@@ -149,8 +149,8 @@ else{
                     </div>
                 </div>
 
-                <div class="wrap-input100 bg0 rs1-alert-validate" data-validate="Please Type Your Message">
-                    <span class="label-input100">Message</span>
+                <div class="wrap-input100 bg0 rs1-alert-validate" data-validate="Typ hier je bericht">
+                    <span class="label-input100">Bericht voor spelers</span>
                     <textarea class="input100" name="Message" placeholder="Bericht..."></textarea>
                     <input name="submit" type="text" value="" />
                 </div>
