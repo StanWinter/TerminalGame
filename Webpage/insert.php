@@ -30,7 +30,7 @@ else
 }
 
  
-$sql = "INSERT INTO hack (GameNumber, players, language, Message) VALUES ('$GameNumber', '$players', '$langInt', '$Message')";
+$sql = "INSERT INTO GameInformation (GameNumber, Players, Language, Message) VALUES ('$GameNumber', '$players', '$langInt', '$Message')";
 if (mysqli_query($conn, $sql)) {
       //echo "New record created successfully";
 } else {
@@ -38,6 +38,6 @@ if (mysqli_query($conn, $sql)) {
 }
 mysqli_close($conn);
 
-header("refresh:1; url=index.php")
+//header("refresh:1; url=index.php")
 
 ?>

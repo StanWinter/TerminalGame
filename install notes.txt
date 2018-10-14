@@ -1,0 +1,58 @@
+1. update pi 
+	sudo apt-get update && sudo apt-get upgrade
+
+2. install mysql / phpmyadmin
+	MYSQL
+	sudo apt-get install mysql-server
+	*after installation it needs to be configured
+	sudo mysql_secure_installation
+	*after this a new account needs to be created
+	mysql -u root -p
+	*this will create a new user named pi with the password: test123. With this we
+	*can login on the MYSQL server
+	GRANT ALL PRIVILEGES ON *.* TO 'pi'@'localhost' IDENTIFIED BY 'test123';
+
+	phpmyadmin
+	sudo apt-get install phpmyadmin
+	*choose apache2 when asked
+	*choose yes when asked
+	*now we need to configre apache2.conf
+	sudo nano /etc/apache2/apache2.conf
+	*at the bottom of the file add:
+	Include /etc/phpmyadmin/apache.conf
+	* ctrl + X to save, enter Y when asked
+	*restard the server
+	/etc/init.d/apache2 restart
+
+	in phpmyadmin make a database named: "hackgame" with a table named: "GameInformation"
+	add the following types in the table:
+	uid INT 
+	GameNumber INT
+	Players INT
+	Language INT
+	Message TEXT
+	DateAndTime DATETIME current_timestamp
+
+	you can change all of this, however this is how the scripts are configured by default
+	
+3. install with apt-get
+	sudo apt-get install python-pyudev
+	sudo apt-get install python3-pymysql
+	sudo apt-get install python3-pip
+
+4. install with pip:
+   (install with "pip3 install theprogramname" so that its installed for python 3 not 2)
+
+	sudo pip3 install flask
+
+6. setup webpage
+	sudo apt-get install php5-fpm php5-mysql	
+	sudo apt-get install nginx
+	sudo apt-get install php5-fpm php5-mysql
+	*from the folder copy webpage contents to: "\\RASPBERRYPI\Home\var\www\html"
+	*you can reach the webpage by going to: "http://IPADRES/index.php"
+	
+
+	
+
+

@@ -48,7 +48,7 @@
 //} else { echo "0 results"; }
 //$conn->close();
 $conn = mysqli_connect("localhost", "pi", "test123", "hackgame");
-$sql = "SELECT uid, GameNumber, players, hint, language, Message, DateAndTime FROM hack";
+$sql = "SELECT uid, GameNumber, players, language, Message, DateAndTime FROM GameInformation";
 $result = $conn->query($sql);
 $row = $result->fetch_assoc();
 

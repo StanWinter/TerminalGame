@@ -1,4 +1,4 @@
-import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json
+import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json,urllib.request
 import TerminalGameLanguage,TerminalGameMYSQL#, LanDetector
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 #from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
@@ -12,7 +12,7 @@ columns, rows = os.get_terminal_size(1)
 FirstLoad = True
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-DEVMODE = False # SET TO FALSE IF NOT USED
+DEVMODE = True # SET TO FALSE IF NOT USED
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # codes the player needs to enter
@@ -420,10 +420,12 @@ def RestartCountDown():
                 time.sleep(10)
     
 #-------------------------------------------------------------------- 
-def SendJsonUpdate():
-    payload = {'name': 'bob', 'job': 'driver'}
-    r = request.post('https://reqres.in/api/users',json=payload)
-    print(r.text)
+def SendJsonUpdate(value):
+    url = "http://10.0.0.10:8080/json.htm?type=command&param=udevice&idx=26&nvalue="+value+"0&svalue=;"
+    urllib.request.urlopen(url)
+    #payload = {'name': 'bob', 'job': 'driver'}
+    #r = request.post('https://reqres.in/api/users',json=payload)
+    #print(r.text)
     #10.0.0.110:8080/
 #-------------------------------------------------------------------- 
 #start of the process so we can run the game and check for connections    

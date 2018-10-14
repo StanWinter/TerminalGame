@@ -26,7 +26,7 @@ def GetLastData():
                                  cursorclass=pymysql.cursors.DictCursor)
 
     with connection.cursor() as cursor:
-        sql = "SELECT `uid`, `players`,`hint`, `language`,`Message`,`DateAndTime`  FROM `hack`"
+        sql =  sql = "SELECT `uid`, `players`, `language`,`Message`,`DateAndTime`  FROM `GameInformation`" #GameInformation
         cursor.execute(sql)
         result = cursor.fetchall()#fetchone()        
         connection.close()
@@ -48,8 +48,6 @@ def IndexData():
                 TEMPinfo.UID = rows['uid']
             if data == "players":
                 TEMPinfo.PlayerAmount = rows['players']
-            if data == "hint":
-               TEMPinfo.Hint = rows['hint']
             if data == "language":
                 TEMPinfo.Language = rows['language']
             if data == "Message":
