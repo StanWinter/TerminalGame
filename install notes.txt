@@ -48,7 +48,6 @@
 6. setup webpage
 	sudo apt-get install php5-fpm php5-mysql	
 	sudo apt-get install nginx
-	sudo apt-get install php5-fpm php5-mysql
 	*from the folder copy webpage contents to: "\\RASPBERRYPI\Home\var\www\html"
 	*you can reach the webpage by going to: "http://IPADRES/index.php"
 	

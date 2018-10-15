@@ -6,7 +6,7 @@ from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreen
 from TerminalGameMYSQL import PlayersInformation 
 from multiprocessing import Process, Value
 from flask import Flask, request
-app = Flask(__name__)
+
 
 context = pyudev.Context()
 columns, rows = os.get_terminal_size(1)
@@ -119,7 +119,6 @@ def TitleScreen_Selections():
             option = TextInput()
         if option == TextColl.DevInputText[0] or MPvalue.value == 1:
             myPlayer.GameStarted = True
-            #SendProgress(10)
             os.system('cls||clear')
             FakeLoading(TextColl.FakeLoadingText1)
             slowprint(TextColl.ACCESSGRANTEDTEXT,2)
@@ -143,6 +142,7 @@ def StartGame():
         time.sleep(1.00)
     else:
         FirstLoad = False
+        SendProgress(10)
 
     os.system('cls||clear')
     SlowPrintArray(TextColl.InputCommandsText, TextColl.PLEASEENTERCOMMANDTEXT)
@@ -429,8 +429,16 @@ def RestartCountDown():
     
 #-------------------------------------------------------------------- 
 def SendProgress(value):
-    url = "http://10.0.0.10:8080/json.htm?type=command&param=udevice&idx=26&nvalue="+str(value)+"0&svalue=;"
-    urllib.request.urlopen(url)
+    if DEVMODE == False:
+        try:
+            url = "http://10.0.0.10:8080/json.htm?type=command&param=udevice&idx=26&nvalue="+str(value)+"0&svalue=;"
+            urllib.request.urlopen(url)
+        except urllib.request.HTTPError:
+            print ("error http")
+        except urllib.request.URLError as e:
+	        print ("error url")      
+        finally:
+	        print ("This is going to be printed even if no exception occurs")
 
 #    #payload = {'name': 'bob', 'job': 'driver'}
 #    #r = request.post('https://reqres.in/api/users',json=payload)
