@@ -49,7 +49,7 @@ def IndexData():
         TEMPinfo.PlayerAmount = 4
         TEMPinfo.Language = 0
         TEMPinfo.LastMessage = ""
-        TEMPinfo.DateAndTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        TEMPinfo.DateAndTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         Pinfo = TEMPinfo
         return Pinfo
     else:
