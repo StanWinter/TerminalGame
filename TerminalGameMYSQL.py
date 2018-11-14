@@ -42,6 +42,8 @@ def IndexData():
     global Pinfo
     global TEMPinfo
 
+    FakeAnwser = True
+
     if FakeAnwser == True:
         TEMPinfo.UID = 999
         TEMPinfo.PlayerAmount = 4
