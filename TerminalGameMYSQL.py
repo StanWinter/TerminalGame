@@ -39,6 +39,8 @@ def GetLastData():
 def IndexData():
 
     global FakeAnwser
+    global Pinfo
+    global TEMPinfo
 
     if FakeAnwser == True:
         TEMPinfo.UID = 999
@@ -51,9 +53,7 @@ def IndexData():
     else:
         results = GetLastData()
         highestUID = 0
-        updateData = False
-        global Pinfo
-        global TEMPinfo
+        updateData = False     
         newtime = datetime.datetime
 
         for rows in results: 
