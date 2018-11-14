@@ -404,12 +404,13 @@ def CheckForMessage():
     global LastMessageTime
     Pinfo = TerminalGameMYSQL.IndexData()
     uid = Pinfo.UID
-    if Pinfo.DateAndTime > datetime.datetime.strptime(str(LastMessageTime), '%Y-%m-%d %H:%M:%S'):       
-       LastMessageTime = datetime.datetime.strptime(str(Pinfo.DateAndTime), '%Y-%m-%d %H:%M:%S')
+    if DEVMODE == False: 
+        if Pinfo.DateAndTime > datetime.datetime.strptime(str(LastMessageTime), '%Y-%m-%d %H:%M:%S'):       
+           LastMessageTime = datetime.datetime.strptime(str(Pinfo.DateAndTime), '%Y-%m-%d %H:%M:%S')
      
-       if Pinfo.LastMessage is not "":
-           print("")
-           slowprint(Pinfo.LastMessage,3)  
+           if Pinfo.LastMessage is not "":
+               print("")
+               slowprint(Pinfo.LastMessage,3)  
 #-------------------------------------------------------------------- 
 def RestartCountDown():
     Pinfo = TerminalGameMYSQL.IndexData()
