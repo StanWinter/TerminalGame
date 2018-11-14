@@ -448,7 +448,7 @@ def SendProgress(value):
 #    #10.0.0.110:8080/
 #-------------------------------------------------------------------- 
 def CheckLanConnection(): #Checks if the btn is pressed. If this is the case it returns True
-        if GPIO.input(keyBtnGpio) == False:
+        if GPIO.input(keyBtnGpio) == True:
             return True
         else:
             return False
