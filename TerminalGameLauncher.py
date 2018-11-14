@@ -29,7 +29,7 @@ uid = 0
 #gpio variables for lan connection test
 GPIO.setmode(GPIO.BCM) #referring to the pins by the "Broadcom SOC channel" number
 GPIO.setwarnings(False) #disable GPIO warnings
-keyBtnGpio = 12
+keyBtnGpio = 18
 GPIO.setup(keyBtnGpio, GPIO.IN, pull_up_down=GPIO.PUD_UP) #key
 
 
