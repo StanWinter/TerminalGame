@@ -38,6 +38,8 @@ def GetLastData():
 
 def IndexData():
 
+    global FakeAnwser
+
     if FakeAnwser == True:
         TEMPinfo.UID = 999
         TEMPinfo.PlayerAmount = 4
