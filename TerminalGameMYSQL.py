@@ -3,6 +3,8 @@
 import pymysql.cursors
 import datetime
 
+FakeAnwser = True
+
 class PlayersInformation:
     def __init__(self):
         self.UID = 0
@@ -35,34 +37,43 @@ def GetLastData():
 
 
 def IndexData():
-    results = GetLastData()
-    highestUID = 0
-    updateData = False
-    global Pinfo
-    global TEMPinfo
-    newtime = datetime.datetime
 
-    for rows in results: 
-        for data in rows:
-            if data == "uid":
-                TEMPinfo.UID = rows['uid']
-            if data == "players":
-                TEMPinfo.PlayerAmount = rows['players']
-            if data == "language":
-                TEMPinfo.Language = rows['language']
-            if data == "Message":
-                TEMPinfo.LastMessage = rows['Message']
-            if data == "DateAndTime":
-                TEMPinfo.DateAndTime = datetime.datetime.strptime(str(rows['DateAndTime']), f)
-            if TEMPinfo.UID >= Pinfo.UID:         
-                updateData = True
+    if FakeAnwser == True:
+        TEMPinfo.UID = 999
+        TEMPinfo.PlayerAmount = 4
+        TEMPinfo.Language = 0
+        TEMPinfo.LastMessage = ""
+        TEMPinfo.DateAndTime = datetime.datetime.now()
+        Pinfo = TEMPinfo
+        return Pinfo
+    else:
+        results = GetLastData()
+        highestUID = 0
+        updateData = False
+        global Pinfo
+        global TEMPinfo
+        newtime = datetime.datetime
+
+        for rows in results: 
+            for data in rows:
+                if data == "uid":
+                    TEMPinfo.UID = rows['uid']
+                if data == "players":
+                    TEMPinfo.PlayerAmount = rows['players']
+                if data == "language":
+                    TEMPinfo.Language = rows['language']
+                if data == "Message":
+                    TEMPinfo.LastMessage = rows['Message']
+                if data == "DateAndTime":
+                    TEMPinfo.DateAndTime = datetime.datetime.strptime(str(rows['DateAndTime']), f)
+                if TEMPinfo.UID >= Pinfo.UID:         
+                    updateData = True
            
-        if updateData == True:
-            Pinfo = TEMPinfo
+            if updateData == True:
+                Pinfo = TEMPinfo
 
-    return Pinfo
+        return Pinfo
 
-IndexData()
 
 
 
