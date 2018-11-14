@@ -187,8 +187,8 @@ def HelpMenu():
 def ConnectMenu():
     os.system('cls||clear')
 
-    if DEVMODE == False:
-        myPlayer.CableConnected = CheckLanConnection()
+    #if DEVMODE == False:
+    myPlayer.CableConnected = CheckLanConnection()
 
     if myPlayer.CableConnected == False:
         slowprint(TextColl.ConnectText1,1)
