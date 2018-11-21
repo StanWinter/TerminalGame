@@ -187,7 +187,7 @@ def HelpMenu():
 #checks if the players connected the lan cable
 def ConnectMenu():
     os.system('cls||clear')
-
+    global ip
     #if DEVMODE == False:
     myPlayer.CableConnected = CheckLanConnection()
 
