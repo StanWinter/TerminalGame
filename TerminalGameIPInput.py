@@ -11,7 +11,7 @@ def getch():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
 
-def CheckedInput(fakeip):
+def CheckedInput(fakeip = ""):
 
     charCounter = 0
     button_delay = 0.001
