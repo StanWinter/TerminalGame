@@ -19,6 +19,7 @@ def CheckedInput(fakeip = ""):
     countLength = len(splitIP[0])
     splitsCounted = 0
     playerinput = ""
+    print(splitIP)
     ipCharLength = (len(splitIP[0])+len(splitIP[1])+len(splitIP[2])+len(splitIP[3]))
 
     while True:
