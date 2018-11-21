@@ -1,5 +1,5 @@
 import cmd,textwrap,sys,os,time,pyudev,multiprocessing,datetime,json,urllib,urllib.request
-import TerminalGameLanguage,TerminalGameMYSQL
+import TerminalGameLanguage,TerminalGameMYSQL, TerminalGameIPInput
 import RPi.GPIO as GPIO
 from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreenMessage
 #from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
@@ -198,7 +198,7 @@ def ConnectMenu():
         slowprint(TextColl.ConnectText2)
         while True:
             option = TextInput()
-            if myPlayer.CableConnected == True and ip in option:
+            if myPlayer.CableConnected == True and TerminalGameIPInput.CheckedInput(ip) == True:
                 os.system('cls||clear')
                 myPlayer.ConnectionOnline = True
                 FakeLoading(TextColl.ConnectFakeLoadingText1)

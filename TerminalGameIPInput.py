@@ -11,9 +11,8 @@ def getch():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
 
-def CheckedInput():
+def CheckedInput(fakeip):
 
-    fakeip = "127.0.0.1" 
     charCounter = 0
     button_delay = 0.001
     splitIP = fakeip.split('.')
@@ -41,11 +40,12 @@ def CheckedInput():
             
         if(ipCharLength == charCounter):
             sys.stdout.write(' \n')
+            sys.stdout.flush()
             if(splitIP[0]+splitIP[1]+splitIP[2]+splitIP[3]) == playerinput:
-                print("succes")
+                #print("succes")
                 return True
             else:
-                print("fail")
+                #print("fail")
                 return False
 
         sys.stdout.flush()

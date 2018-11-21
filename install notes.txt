@@ -36,7 +36,7 @@
 	you can change all of this, however this is how the scripts are configured by default
 	
 3. install with apt-get
-	sudo apt-get install python-pyudev
+	sudo apt-get install python3-pyudev
 	sudo apt-get install python3-pymysql
 	sudo apt-get install python3-pip
 
