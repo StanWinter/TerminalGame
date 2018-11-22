@@ -39,6 +39,7 @@
 	sudo apt-get install python3-pyudev
 	sudo apt-get install python3-pymysql
 	sudo apt-get install python3-pip
+	sudo apt-get install python-rpi.gpio python3-rpi.gpio
 
 4. install with pip:
    (install with "pip3 install theprogramname" so that its installed for python 3 not 2)

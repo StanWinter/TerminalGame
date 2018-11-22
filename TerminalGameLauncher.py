@@ -188,8 +188,9 @@ def HelpMenu():
 def ConnectMenu():
     os.system('cls||clear')
     global ip
-    #if DEVMODE == False:
-    myPlayer.CableConnected = CheckLanConnection()
+
+    if DEVMODE == False:
+        myPlayer.CableConnected = CheckLanConnection()
 
     if myPlayer.CableConnected == False:
         slowprint(TextColl.ConnectText1,1)
@@ -197,7 +198,7 @@ def ConnectMenu():
     else:
         slowprint(TextColl.ConnectText2)
         while True:
-            option = TextInput()
+            #option = TextInput()
             if myPlayer.CableConnected == True and TerminalGameIPInput.CheckedInput(ip) == True:
                 os.system('cls||clear')
                 myPlayer.ConnectionOnline = True
@@ -418,7 +419,9 @@ def RestartCountDown():
     uid = Pinfo.UID
 
     if DEVMODE == True:
+        print("DEVMODE IS ACTIVE, RESTARTING IN 10 SECONDS")
         time.sleep(5)
+        os.execv(sys.executable, ['python3'] + sys.argv)
     else:
         while True:
             Pinfo = TerminalGameMYSQL.IndexData()
