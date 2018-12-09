@@ -5,7 +5,7 @@ from TerminalGameTools import slowprint, FakeLoading, SlowPrintArray, FullScreen
 #from TerminalGameFolderChecker import GetPlayerAmount # not used anymore, is still an option is case something doesnt work
 from TerminalGameMYSQL import PlayersInformation 
 from multiprocessing import Process, Value
-from flask import Flask, request
+
 
 
 context = pyudev.Context()
@@ -13,13 +13,13 @@ columns, rows = os.get_terminal_size(1)
 FirstLoad = True
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-DEVMODE = True # SET TO FALSE IF NOT USED
+DEVMODE = False # SET TO FALSE IF NOT USED
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # codes the player needs to enter
 ip = "127.0.0.1"
-LoginCode = "12345"
-TransportNumber = "101"
+LoginCode = "2580"
+TransportNumber = "114"
 TransportAmount = 0
 
 #data we get from MYSQL
@@ -29,8 +29,8 @@ uid = 0
 #gpio variables for lan connection test
 GPIO.setmode(GPIO.BCM) #referring to the pins by the "Broadcom SOC channel" number
 GPIO.setwarnings(False) #disable GPIO warnings
-keyBtnGpio = 17
-GPIO.setup(keyBtnGpio, GPIO.IN, pull_up_down=GPIO.PUD_UP) #key
+keyBtnGpio = 24
+keyRSGpio = 18
 
 
 class TextAndInput:
@@ -68,6 +68,8 @@ class TextAndInput:
         self.ChangeAmountText4 = "PLEASE ENTER TRANSPORT NUMBER"
         self.ChangeAmountFakeLoadingText1 = "SEARCHING","SEARCH COMPLETED"
         self.ChangeAmountFakeLoadingText2 = "SEARCHING","SEARCH FAILED"
+        self.ChangeAmountFakeLoadingText3 = "TRANSPORTNUMMER 114","BESTUURDER: PETE LAREN","BEWAKER: BILL MACCOY" #MOETEN JULLIE VERTALEN!
+        self.ChangeAmountFakeLoadingText4 = "REISTIJD: 15 MINUTEN","BESTEMMING: TGE PRISON"      #MOETEN JULLIE VERTALEN!
         self.TransportText1 = "ADMINISTRATOR ACCESS REQUIRED"
         self.PrisonerText1 = "PLEASE ENTER THE AMOUNT OF PRISONERS THAT NEED TO BE TRANSPORTED"
         self.PrisonerFakeLoadingText1 = ["PROCESSING","TASK COMPLETED PLEASE SAVE THE CHANGES AND CARRY ON WITH YOUR WORK"]
@@ -94,11 +96,10 @@ Pinfo = PlayersInformation()
 
 #--------------------------------------------------------------------
 # Screen the player will see on startup
-def TitleScreen(): 
-        
+def TitleScreen():         
     global Pinfo
     global TransportAmount
-      
+    #RelaySwitchoff()
     Pinfo = TerminalGameMYSQL.IndexData()
     if Pinfo.Language == 0:
         SetLanguage(False) # True = English, False = Dutch  
@@ -110,7 +111,7 @@ def TitleScreen():
     #TransportAmount = int(GetPlayerAmount()) # get the amount of players trough file that changed
 
     FullScreenMessage(TextColl.BootScreenLockedText,1)
-    TitleScreen_Selections()       
+    TitleScreen_Selections()
 #--------------------------------------------------------------------
 # checks if the usb is connected or if a dev enterd a command
 def TitleScreen_Selections():   
@@ -194,6 +195,7 @@ def ConnectMenu():
 
     if myPlayer.CableConnected == False:
         slowprint(TextColl.ConnectText1,1)
+        time.sleep(2.00)
         StartGame()
     else:
         slowprint(TextColl.ConnectText2)
@@ -203,6 +205,7 @@ def ConnectMenu():
                 os.system('cls||clear')
                 myPlayer.ConnectionOnline = True
                 FakeLoading(TextColl.ConnectFakeLoadingText1)
+                time.sleep(2.00)
                 StartGame()
                 break
             else:
@@ -227,6 +230,7 @@ def LoginMenu():
             if LoginCode == option:
                 myPlayer.LogedIn = True
                 FakeLoading(TextColl.LoginFakeLoadingText1)
+                time.sleep(2.00)
                 StartGame()
             else:
                 slowprint(TextColl.LoginText4,1)
@@ -252,6 +256,9 @@ def ChangeAmountMenu():
             option = TextInput()
             if option == TransportNumber:
                 FakeLoading(TextColl.ChangeAmountFakeLoadingText1)
+                FakeLoading(TextColl.ChangeAmountFakeLoadingText3)
+                FakeLoading(TextColl.ChangeAmountFakeLoadingText4)
+                time.sleep(10.00)
                 TransportMenu()
                 break
             else:
@@ -348,6 +355,7 @@ def EndScreen(type):
     elif type == True: # right end
         FullScreenMessage(TextColl.EndScreenText)
         RestartCountDown()
+        RelaySwitchon()
 #--------------------------------------------------------------------
 # WHEN THIS FUNCTION IS CALLED IT WONT END UNTILL THE USER PRESSES ENTER
 # here we can catch text before its used.
@@ -407,8 +415,8 @@ def CheckForMessage():
     Pinfo = TerminalGameMYSQL.IndexData()
     uid = Pinfo.UID
     if DEVMODE == False: 
-        if Pinfo.DateAndTime > datetime.datetime.strptime(str(LastMessageTime), '%Y-%m-%d %H:%M:%S'):       
-           LastMessageTime = datetime.datetime.strptime(str(Pinfo.DateAndTime), '%Y-%m-%d %H:%M:%S')
+        #if Pinfo.DateAndTime > datetime.datetime.strptime(str(LastMessageTime), '%Y-%m-%d %H:%M:%S'):       
+           #LastMessageTime = datetime.datetime.strptime(str(Pinfo.DateAndTime), '%Y-%m-%d %H:%M:%S')
      
            if Pinfo.LastMessage is not "":
                print("")
@@ -417,6 +425,7 @@ def CheckForMessage():
 def RestartCountDown():
     Pinfo = TerminalGameMYSQL.IndexData()
     uid = Pinfo.UID
+    RelaySwitchon()
 
     if DEVMODE == True:
         print("DEVMODE IS ACTIVE, RESTARTING IN 10 SECONDS")
@@ -441,9 +450,9 @@ def SendProgress(value):
         except urllib.request.HTTPError:
             print ("error http")
         except urllib.request.URLError as e:
-	        print ("error url")      
+            print ("error url")      
         finally:
-	        print ("This is going to be printed even if no exception occurs")
+            print ("This is going to be printed even if no exception occurs")
 
 #    #payload = {'name': 'bob', 'job': 'driver'}
 #    #r = request.post('https://reqres.in/api/users',json=payload)
@@ -451,10 +460,27 @@ def SendProgress(value):
 #    #10.0.0.110:8080/
 #-------------------------------------------------------------------- 
 def CheckLanConnection(): #Checks if the btn is pressed. If this is the case it returns True
-        if GPIO.input(keyBtnGpio) == False:
-            return True
-        else:
-            return False
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(keyBtnGpio, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+    if GPIO.input(keyBtnGpio) == False:
+        return True
+    else:
+        return False
+#-------------------------------------------------------------------- 
+def RelaySwitchoff(): #
+    GPIO.setmode(GPIO.BCM) #referring to the pins by the "Broadcom SOC channel" number
+    GPIO.setup(keyRSGpio, GPIO.OUT) # GPIO Assign mode
+    GPIO.setup(keyRSGpio, GPIO.OUT)
+    GPIO.output(keyRSGpio, GPIO.LOW)
+    GPIO.cleanup()
+#-------------------------------------------------------------------- 
+def RelaySwitchon(): #
+    GPIO.setmode(GPIO.BCM) #referring to the pins by the "Broadcom SOC channel" number
+    GPIO.setup(keyRSGpio, GPIO.OUT) # GPIO Assign mode
+    GPIO.setup(keyRSGpio, GPIO.OUT) # GPIO Assign mode
+    GPIO.output(keyRSGpio, GPIO.HIGH) # out
+    GPIO.output(keyRSGpio, GPIO.LOW) # on
 #-------------------------------------------------------------------- 
 #start of the process so we can run the game and check for connections    
 if __name__ == "__main__":

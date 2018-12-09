@@ -51,6 +51,8 @@ class TextAndInput:
         self.ChangeAmountText4 = "PLEASE ENTER TRANSPORT NUMBER"
         self.ChangeAmountFakeLoadingText1 = "SEARCHING","SEARCH COMPLETED"
         self.ChangeAmountFakeLoadingText2 = "SEARCHING","SEARCH FAILED"
+        self.ChangeAmountFakeLoadingText3 = "TRANSPORTNUMMER 114","BESTUURDER: PETE LAREN","BEWAKER: BILL MACCOY" #MOETEN JULLIE VERTALEN!
+        self.ChangeAmountFakeLoadingText4 = "REISTIJD: 15 MINUTEN","BESTEMMING: TGE PRISON"      #MOETEN JULLIE VERTALEN!
         self.TransportText1 = "ADMINISTRATOR ACCESS REQUIRED"
         self.PrisonerText1 = "PLEASE ENTER THE AMOUNT OF PRISONERS THAT NEED TO BE TRANSPORTED"
         self.PrisonerFakeLoadingText1 = ["PROCESSING","TASK COMPLETED PLEASE SAVE THE CHANGES AND CARRY ON WITH YOUR WORK"]
@@ -93,7 +95,7 @@ class TextAndInput:
         self.TransportMenuText = ["1 = ANNULEER GEVANGENENVERVOER","2 = VERANDER HOEVEELHEID GEVANGENEN VOOR TRANSPORT",
                           "3 = STEL TRANSPORT UIT","4 = GA TERUG NA HET LAATSTE MENU"]
         self.ExitMenuText = ["1 = JA", "2 = NEE"]
-        self.FakeLoadingText1 = ["KEYCRACKER.PY AAN HET INSTALEREN", "INSTALATIE VOLTOOID"]
+        self.FakeLoadingText1 = ["KEYCRACKER.PY AAN HET INSTALLEREN", "INSTALLATIE VOLTOOID"]
         self.ACCESSGRANTEDTEXT = "TOEGANG VERLEEND"
         self.PLEASEENTERCOMMANDTEXT = "VOER EEN OPDRACHT IN"
         self.PLEASEENTERAVALIDCOMMANDTEXT = "VOER EEN GELDIGE OPDRACHT IN"
@@ -101,7 +103,7 @@ class TextAndInput:
         self.ConnectText2 = "VOER HET IP ADRES IN WAARMEE U WILT VERBINDEN"
         self.ConnectText3 = "ERROR: KAN NIET MET IP VERBINDEN"
         self.ConnectFakeLoadingText1 = ["AAN HET VERBINDEN","VERBINDING GESLAAGD"]
-        self.LoginText1 = "ERROR: NIET VERBONDEN AAN HET INTERNET"
+        self.LoginText1 = "ERROR: NIET VERBONDEN MET HET INTERNET"
         self.LoginText2 = "ERROR: NIET VERBONDEN MET EEN ANDERE COMPUTER"
         self.LoginText3 = "VOER PINCODE IN"
         self.LoginText4 = "ERROR: PINCODE ONGELDIG, KEERT TERUG NAAR HET MENU"
@@ -112,6 +114,8 @@ class TextAndInput:
         self.ChangeAmountText4 = "VOER TRANSPORT NUMMER IN"
         self.ChangeAmountFakeLoadingText1 = "ZOEKEN","ZOEKEN GESLAAGD"
         self.ChangeAmountFakeLoadingText2 = "ZOEKEN","ZOEKEN MISLUKT"
+        self.ChangeAmountFakeLoadingText3 = "TRANSPORTNUMMER 114","BESTUURDER: PETE LAREN","BEWAKER: BILL MACCOY"
+        self.ChangeAmountFakeLoadingText4 = "REISTIJD: 15 MINUTEN","BESTEMMING: TGE PRISON"       
         self.TransportText1 = "ADMINISTRATOR TOEGANG NODIG"
         self.PrisonerText1 = "VOER HOEVEELHEID GEVANGENEN VOOR TRANSPORT IN A.U.B."
         self.PrisonerFakeLoadingText1 = ["AAN HET VERWERKEN","OPDRACHT VOLTOOID, SLA ALSTUBLIEFT UW VERANDERINGEN OP EN GA DOOR MET UW WERK"]

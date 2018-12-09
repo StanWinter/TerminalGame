@@ -29,6 +29,10 @@ def CheckedInput(fakeip = ""):
             print("Stop!")
             exit(0)
 
+        if char in ('\000', '\xe0'):
+            print("Stop!")
+            return False
+
         sys.stdout.write(char)
         charCounter +=1
         
